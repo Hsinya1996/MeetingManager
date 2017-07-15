@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MeetingManager</string>
+    <string name="meet"><u>今日會議</u></string>
 </resources>

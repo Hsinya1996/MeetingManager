@@ -3,4 +3,38 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="28dp"
+            android:layout_marginTop="27dp"
+            android:layout_toStartOf="@+id/tv"
+            android:text="你好 XXX"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="今日會議"
+            android:textSize="20sp"
+            android:layout_below="@+id/textView"
+            android:layout_centerHorizontal="true" />
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="11dp" />
+
+    </RelativeLayout>
 </LinearLayout>
