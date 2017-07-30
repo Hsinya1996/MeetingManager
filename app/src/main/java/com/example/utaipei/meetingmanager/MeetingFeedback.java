@@ -15,8 +15,8 @@ public class MeetingFeedback extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.meeting_feedback, container, false);
-        TextView textView = (TextView) rootView.findViewById(R.id.tv);
-        textView.setText("feedback");
+
+
         return rootView;
     }
 }
