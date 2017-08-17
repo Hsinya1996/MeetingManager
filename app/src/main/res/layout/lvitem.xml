@@ -16,17 +16,19 @@
             android:layout_alignBottom="@+id/check"
             android:layout_alignParentStart="true"
             android:text="會議名字"
+            android:textColor="@android:color/black"
             android:textSize="23sp" />
 
         <TextView
             android:id="@+id/place"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="39dp"
-            android:text="會議地點"
-            android:textSize="18sp"
             android:layout_alignBottom="@+id/check"
-            android:layout_toEndOf="@+id/name" />
+            android:layout_marginStart="39dp"
+            android:layout_toEndOf="@+id/name"
+            android:text="會議地點"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/time"
@@ -35,6 +37,7 @@
             android:layout_above="@+id/place"
             android:layout_alignStart="@+id/place"
             android:text="會議時間"
+            android:textColor="@android:color/black"
             android:textSize="18sp" />
 
         <Button

@@ -16,6 +16,7 @@
             android:layout_marginStart="21dp"
             android:layout_marginTop="35dp"
             android:text="會議時間:"
+            android:textColor="@android:color/black"
             android:textSize="20sp" />
 
         <RadioGroup
@@ -59,6 +60,7 @@
             android:layout_below="@+id/radioGroup2"
             android:layout_marginTop="24dp"
             android:text="會議地點:"
+            android:textColor="@android:color/black"
             android:textSize="20sp" />
 
         <RadioGroup
@@ -103,6 +105,7 @@
             android:layout_below="@+id/textView5"
             android:layout_marginTop="24dp"
             android:text="會議流程:"
+            android:textColor="@android:color/black"
             android:textSize="20sp" />
 
         <RadioGroup
@@ -147,6 +150,7 @@
             android:layout_below="@+id/textView6"
             android:layout_marginTop="20dp"
             android:text="建議:"
+            android:textColor="@android:color/black"
             android:textSize="20sp" />
 
         <EditText

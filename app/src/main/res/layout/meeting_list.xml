@@ -16,17 +16,19 @@
             android:layout_marginTop="27dp"
             android:layout_toStartOf="@+id/tv"
             android:text="你好 XXX"
+            android:textColor="@android:color/black"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/textView"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="14dp"
             android:text="今日會議"
-            android:textSize="25sp"
-            android:layout_below="@+id/textView"
-            android:layout_centerHorizontal="true" />
+            android:textColor="@android:color/black"
+            android:textSize="25sp" />
 
         <Button
             android:id="@+id/signout"
