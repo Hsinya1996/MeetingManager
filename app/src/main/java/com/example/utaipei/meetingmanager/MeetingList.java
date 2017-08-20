@@ -1,14 +1,20 @@
 package com.example.utaipei.meetingmanager;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,6 +25,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by cindy on 2017/7/11.
@@ -27,8 +35,14 @@ import java.util.HashMap;
 public class MeetingList extends AppCompatActivity{
     private TextView tv,lname,ltime,lplace;
     private Button sign0ut,lcheck;
+    private WifiManager wifiManager;
+    private List results;
     //private ListView listView;
 
+    /**
+     * Id to identity ACCESS_COARSE_LOCATION permission request.
+     */
+    private static final int REQUEST_ACCESS_LOCATION = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +54,33 @@ public class MeetingList extends AppCompatActivity{
         SpannableString content = new SpannableString("今日會議");
         content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
         tv.setText(content);
+
+        //wifi
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if(!wifiManager.isWifiEnabled())
+        {
+            AlertDialog dialog = new AlertDialog.Builder(this).create();
+            dialog.setTitle("警示");
+            dialog.setMessage("你的Wi-Fi並沒有開啟, 是否開啟?");
+            //dialog.setIconAttribute(android.R.attr.alertDialogIcon);
+            dialog.setCancelable(false);
+            dialog.setButton(DialogInterface.BUTTON_POSITIVE,"確認", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // TODO Auto-generated method stub
+                    wifiManager.setWifiEnabled(true);
+                }
+            });
+            dialog.show();
+            Button btnPositive =
+                    dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE);
+            btnPositive.setTextColor(getResources().getColor(R.color.colorAccent));
+            btnPositive.setTextSize(16);
+            Window window = dialog.getWindow();
+            TextView title = (TextView)window.findViewById(R.id.alertTitle);
+            title.setTextColor(Color.RED);
+        }
+
+
 
         //meeting list
         Context mContext = MeetingList.this;
@@ -86,31 +127,6 @@ public class MeetingList extends AppCompatActivity{
         sign0ut.setOnClickListener(signoutListener);
         //ll.addView(view,0);
 
-        /*listView = (ListView) findViewById(R.id.list);
-        // 清單陣列
-        ArrayList<HashMap<String,String>> data = new ArrayList<HashMap<String,String>>();
-        String[] titles = new String[]{ "預算審查" , "報表分析", "部門會議","預算審查" , "報表分析", "部門會議","預算審查" , "報表分析", "部門會議" };
-        String[] places = new String[]{ "G509" , "C313", "H412" ,"G509" , "C313", "H412" ,"G509" , "C313", "H412" };
-
-        for( int i=0;i<titles.length ; ++i) {
-            HashMap<String,String> item = new HashMap<String,String>();
-            item.put("title",titles[i]);
-            item.put("place",places[i]);
-            data.add(item);
-        }
-        SimpleAdapter adapter = new SimpleAdapter(this, data, android.R.layout.simple_list_item_2, new String[] {"title", "place"},
-                new int[] {android.R.id.text1, android.R.id.text2});
-        listView.setAdapter(adapter);
-
-        //choose the item
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent();
-                intent.setClass(MeetingList.this,Meeting.class);
-                startActivity(intent);
-            }
-        });*/
 
     }
 
