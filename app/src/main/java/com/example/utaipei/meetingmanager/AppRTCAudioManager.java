@@ -8,6 +8,7 @@
  *  be found in the AUTHORS file in the root of the source tree.
  */
 
+package com.example.utaipei.meetingmanager;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
