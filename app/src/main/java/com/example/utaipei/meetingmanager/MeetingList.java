@@ -1,12 +1,19 @@
 package com.example.utaipei.meetingmanager;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.location.LocationManager;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
+import android.os.Handler;
+import android.os.Message;
+import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
@@ -15,34 +22,29 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by cindy on 2017/7/11.
  */
 
 public class MeetingList extends AppCompatActivity{
+    private static final int REQUEST_FINE_LOCATION = 120;
     private TextView tv,lname,ltime,lplace;
     private Button sign0ut,lcheck;
     private WifiManager wifiManager;
-    private List results;
-    //private ListView listView;
+    private TextView sh;
+    private List<ScanResult> wifiList;
+    private LocationManager locateManager;
 
-    /**
-     * Id to identity ACCESS_COARSE_LOCATION permission request.
-     */
-    private static final int REQUEST_ACCESS_LOCATION = 101;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,19 +57,19 @@ public class MeetingList extends AppCompatActivity{
         content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
         tv.setText(content);
 
-        //wifi
-        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if(!wifiManager.isWifiEnabled())
-        {
+        //開啟GPS
+        boolean gpsEnabled = Settings.Secure.isLocationProviderEnabled( getContentResolver(), LocationManager.GPS_PROVIDER );
+        locateManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        if(!gpsEnabled){ //if gps is disabled
             AlertDialog dialog = new AlertDialog.Builder(this).create();
             dialog.setTitle("警示");
-            dialog.setMessage("你的Wi-Fi並沒有開啟, 是否開啟?");
+            dialog.setMessage("你的gps並沒有開啟, 是否開啟?");
             //dialog.setIconAttribute(android.R.attr.alertDialogIcon);
             dialog.setCancelable(false);
             dialog.setButton(DialogInterface.BUTTON_POSITIVE,"確認", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     // TODO Auto-generated method stub
-                    wifiManager.setWifiEnabled(true);
+                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                 }
             });
             dialog.show();
@@ -80,6 +82,38 @@ public class MeetingList extends AppCompatActivity{
             title.setTextColor(Color.RED);
         }
 
+        //開啟wifi
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if(!wifiManager.isWifiEnabled())
+        {
+            AlertDialog dialog = new AlertDialog.Builder(this).create();
+            dialog.setTitle("警示");
+            dialog.setMessage("你的Wi-Fi並沒有開啟, 是否開啟?");
+            //dialog.setIconAttribute(android.R.attr.alertDialogIcon);
+            dialog.setCancelable(false);
+            dialog.setButton(DialogInterface.BUTTON_POSITIVE,"確認", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // TODO Auto-generated method stub
+                    wifiManager.setWifiEnabled(true);
+                    if(wifiManager.WIFI_STATE_ENABLED == 3){
+                        scanWifiList();
+                    }
+                }
+            });
+            dialog.show();
+            Button btnPositive =
+                    dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE);
+            btnPositive.setTextColor(getResources().getColor(R.color.colorAccent));
+            btnPositive.setTextSize(16);
+            Window window = dialog.getWindow();
+            TextView title = (TextView)window.findViewById(R.id.alertTitle);
+            title.setTextColor(Color.RED);
+        }else{
+            scanWifiList();
+        }
+
+
+        sh = (TextView)findViewById(R.id.show);
 
 
         //meeting list
@@ -108,21 +142,9 @@ public class MeetingList extends AppCompatActivity{
                 lcheck.setVisibility(View.INVISIBLE);
             }
             ll.addView(view);
-            lcheck.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v){
-
-                }
-            });
-            lcheck.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v){
-                    Intent intent = new Intent();
-                    intent.setClass(MeetingList.this,Meeting.class);
-                    startActivity(intent);
-                }
-            });
+            lcheck.setOnClickListener(checkinListener);
         }
+
         sign0ut = (Button)findViewById(R.id.signout);
         sign0ut.setOnClickListener(signoutListener);
         //ll.addView(view,0);
@@ -130,6 +152,44 @@ public class MeetingList extends AppCompatActivity{
 
     }
 
+    //scan wifi lists
+    private void scanWifiList(){
+        TimerTask task = new TimerTask(){
+            public void run(){
+                //execute the task
+                WifiScanReceiver wifiReciever = new WifiScanReceiver();
+                registerReceiver(wifiReciever, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+                wifiManager.startScan();
+
+            }
+        };
+        Timer timer = new Timer();
+        timer.schedule(task,0, 10000) ;
+    }
+
+    private final class WifiScanReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context c, Intent intent) {
+            wifiList = wifiManager.getScanResults();
+            String text = String.valueOf(wifiList.size());
+            String text2 = String.valueOf(wifiList.get(1).level);
+            sh.setText(text);
+            Toast.makeText(MeetingList.this,text,Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    //check-in action
+    private Button.OnClickListener checkinListener = new Button.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent();
+            intent.setClass(MeetingList.this,Meeting.class);
+            startActivity(intent);
+        }
+    };
+
+    //signout action
     private Button.OnClickListener signoutListener = new Button.OnClickListener(){
         @Override
         public void onClick(View v) {
