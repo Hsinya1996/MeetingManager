@@ -1,19 +1,14 @@
 package com.example.utaipei.meetingmanager;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.location.LocationManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
@@ -36,13 +31,11 @@ import java.util.TimerTask;
  */
 
 public class MeetingList extends AppCompatActivity{
-    private static final int REQUEST_FINE_LOCATION = 120;
     private TextView tv,lname,ltime,lplace;
     private Button sign0ut,lcheck;
     private WifiManager wifiManager;
     private TextView sh;
     private List<ScanResult> wifiList;
-    private LocationManager locateManager;
 
 
 
@@ -56,31 +49,6 @@ public class MeetingList extends AppCompatActivity{
         SpannableString content = new SpannableString("今日會議");
         content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
         tv.setText(content);
-
-        //開啟GPS
-        boolean gpsEnabled = Settings.Secure.isLocationProviderEnabled( getContentResolver(), LocationManager.GPS_PROVIDER );
-        locateManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        if(!gpsEnabled){ //if gps is disabled
-            AlertDialog dialog = new AlertDialog.Builder(this).create();
-            dialog.setTitle("警示");
-            dialog.setMessage("你的gps並沒有開啟, 是否開啟?");
-            //dialog.setIconAttribute(android.R.attr.alertDialogIcon);
-            dialog.setCancelable(false);
-            dialog.setButton(DialogInterface.BUTTON_POSITIVE,"確認", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    // TODO Auto-generated method stub
-                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                }
-            });
-            dialog.show();
-            Button btnPositive =
-                    dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE);
-            btnPositive.setTextColor(getResources().getColor(R.color.colorAccent));
-            btnPositive.setTextSize(16);
-            Window window = dialog.getWindow();
-            TextView title = (TextView)window.findViewById(R.id.alertTitle);
-            title.setTextColor(Color.RED);
-        }
 
         //開啟wifi
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
