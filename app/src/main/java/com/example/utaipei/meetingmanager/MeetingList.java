@@ -9,6 +9,9 @@ import android.graphics.Color;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
@@ -38,7 +41,13 @@ public class MeetingList extends AppCompatActivity{
     private List<ScanResult> wifiList;
     private WifiScanReceiver wifiReciever;
     private Timer timer;
-
+    private View view;
+    private LayoutInflater inflater;
+    private LinearLayout ll;
+    final String[] titles = new String[]{ "預算審查" , "報表分析", "部門會議","預算審查" , "報表分析", "部門會議","預算審查" , "報表分析", "部門會議","報表分析", "部門會議" };
+    final String[] places = new String[]{ "G509" , "C313", "H412" ,"G509" , "C313", "H412" ,"G509" , "C313", "H412","C313", "H412" };
+    final String[] times = new String[]{ "9-11" , "13-16", "15-18" ,"9-11" , "13-16", "15-18" ,"9-11" , "13-16", "15-18","13-16", "15-18" };
+    int[] a = new int[]{1,0,1,1,0,1,1,1,0,1,0};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +59,14 @@ public class MeetingList extends AppCompatActivity{
         SpannableString content = new SpannableString("今日會議");
         content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
         tv.setText(content);
+
+        //meeting list
+        Context mContext = MeetingList.this;
+        // 取得 LinearLayout 物件
+        ll = (LinearLayout) findViewById(R.id.lists);
+        // 將feedviews加入到 LinearLayout 中
+        inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
 
         //開啟wifi
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -65,7 +82,8 @@ public class MeetingList extends AppCompatActivity{
                     // TODO Auto-generated method stub
                     wifiManager.setWifiEnabled(true);
                     if(wifiManager.WIFI_STATE_ENABLED == 3){
-                        scanWifiList();
+                        timer = new Timer();
+                        timer.schedule(new scanTask(),0, 20000) ;
                     }
                 }
             });
@@ -78,28 +96,37 @@ public class MeetingList extends AppCompatActivity{
             TextView title = (TextView)window.findViewById(R.id.alertTitle);
             title.setTextColor(Color.RED);
         }else{
-            scanWifiList();
+            timer = new Timer();
+            timer.schedule(new scanTask(),0, 20000) ;
         }
-
 
         sh = (TextView)findViewById(R.id.show);
 
+        sign0ut = (Button)findViewById(R.id.signout);
+        sign0ut.setOnClickListener(signoutListener);
 
-        //meeting list
-        Context mContext = MeetingList.this;
-        // 取得 LinearLayout 物件
-        LinearLayout ll = (LinearLayout) findViewById(R.id.lists);
-        // 將feedviews加入到 LinearLayout 中
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
 
+    //scan wifi lists
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 1:
+                    updateLists();
+                    break;
 
-        String[] titles = new String[]{ "預算審查" , "報表分析", "部門會議","預算審查" , "報表分析", "部門會議","預算審查" , "報表分析", "部門會議","報表分析", "部門會議" };
-        String[] places = new String[]{ "G509" , "C313", "H412" ,"G509" , "C313", "H412" ,"G509" , "C313", "H412","C313", "H412" };
-        String[] times = new String[]{ "9-11" , "13-16", "15-18" ,"9-11" , "13-16", "15-18" ,"9-11" , "13-16", "15-18","13-16", "15-18" };
-        int[] a = new int[]{1,0,1,1,0,1,1,1,0,1,0};
+                default:
+                    break;
+            }
+        }
+    };
 
+    private void updateLists() {
+        ll.removeAllViews();
         for( int i=0;i<titles.length ; ++i) {
-            final View view = inflater.inflate(R.layout.lvitem, null, true);
+            view = inflater.inflate(R.layout.lvitem, null, true);
             lname = (TextView)view.findViewById(R.id.name);
             ltime =  (TextView)view.findViewById(R.id.time);
             lplace = (TextView)view.findViewById(R.id.place);
@@ -109,40 +136,38 @@ public class MeetingList extends AppCompatActivity{
             lplace.setText(places[i]);
             if(a[i]==0){
                 lcheck.setVisibility(View.INVISIBLE);
+                a[i]=1;
+            }else{
+                a[i]=0;
             }
             ll.addView(view);
             lcheck.setOnClickListener(checkinListener);
         }
-
-        sign0ut = (Button)findViewById(R.id.signout);
-        sign0ut.setOnClickListener(signoutListener);
-        //ll.addView(view,0);
-
-
+        String text = String.valueOf(wifiList.size());
+        sh.setText(text);
     }
 
-    //scan wifi lists
-    private void scanWifiList(){
-        TimerTask task = new TimerTask(){
-            public void run(){
-                //execute the task
-                wifiReciever = new WifiScanReceiver();
-                registerReceiver(wifiReciever, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-                wifiManager.startScan();
-
-            }
-        };
-        timer = new Timer();
-        timer.schedule(task,0, 10000) ;
+    //time tack of 10's
+    private class scanTask extends TimerTask {
+        @Override
+        public void run() {
+            wifiReciever = new WifiScanReceiver();
+            registerReceiver(wifiReciever, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+            wifiManager.startScan();
+            SystemClock.sleep(1000);
+            Message msg = new Message();
+            msg.what = 1;
+            mHandler.sendMessage(msg);
+        }
     }
 
+    // wifi receiver
     private final class WifiScanReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context c, Intent intent) {
             wifiList = wifiManager.getScanResults();
             String text = String.valueOf(wifiList.size());
             String text2 = String.valueOf(wifiList.get(1).level);
-            sh.setText(text);
             Toast.makeText(MeetingList.this,text,Toast.LENGTH_SHORT).show();
         }
     }
