@@ -36,7 +36,8 @@ public class MeetingList extends AppCompatActivity{
     private WifiManager wifiManager;
     private TextView sh;
     private List<ScanResult> wifiList;
-
+    private WifiScanReceiver wifiReciever;
+    private Timer timer;
 
 
     @Override
@@ -125,13 +126,13 @@ public class MeetingList extends AppCompatActivity{
         TimerTask task = new TimerTask(){
             public void run(){
                 //execute the task
-                WifiScanReceiver wifiReciever = new WifiScanReceiver();
+                wifiReciever = new WifiScanReceiver();
                 registerReceiver(wifiReciever, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
                 wifiManager.startScan();
 
             }
         };
-        Timer timer = new Timer();
+        timer = new Timer();
         timer.schedule(task,0, 10000) ;
     }
 
@@ -164,6 +165,7 @@ public class MeetingList extends AppCompatActivity{
             Intent intent = new Intent();
             intent.setClass(MeetingList.this,MainActivity.class);
             startActivity(intent);
+            MeetingList.this.finish();
         }
     };
 
@@ -178,4 +180,13 @@ public class MeetingList extends AppCompatActivity{
         }
         return super.onKeyDown(keyCode, event);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(wifiReciever);
+        timer.cancel();
+        timer = null;
+    }
+
 }
