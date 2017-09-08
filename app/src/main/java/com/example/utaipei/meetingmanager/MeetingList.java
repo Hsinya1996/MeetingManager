@@ -81,10 +81,10 @@ public class MeetingList extends AppCompatActivity{
                 public void onClick(DialogInterface dialog, int which) {
                     // TODO Auto-generated method stub
                     wifiManager.setWifiEnabled(true);
-                    if(wifiManager.WIFI_STATE_ENABLED == 3){
-                        timer = new Timer();
-                        timer.schedule(new scanTask(),0, 20000) ;
-                    }
+//                    if(wifiManager.WIFI_STATE_ENABLED == 3){
+//                        timer = new Timer();
+//                        timer.schedule(new scanTask(),0, 20000) ;
+//                    }
                 }
             });
             dialog.show();
@@ -95,10 +95,12 @@ public class MeetingList extends AppCompatActivity{
             Window window = dialog.getWindow();
             TextView title = (TextView)window.findViewById(R.id.alertTitle);
             title.setTextColor(Color.RED);
-        }else{
-            timer = new Timer();
-            timer.schedule(new scanTask(),0, 20000) ;
         }
+
+        SystemClock.sleep(1000);
+        timer = new Timer();
+        timer.schedule(new scanTask(),0, 20000) ;
+
 
         sh = (TextView)findViewById(R.id.show);
 
