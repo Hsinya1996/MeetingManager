@@ -1,7 +1,6 @@
 package com.example.utaipei.meetingmanager.http;
 
 
-import com.example.utaipei.meetingmanager.http.Api.ExampleApi;
 import com.example.utaipei.meetingmanager.http.Api.MemberApi;
 
 /**
@@ -10,8 +9,6 @@ import com.example.utaipei.meetingmanager.http.Api.MemberApi;
 
 public class ServiceFactory {
     private static MemberApi memberApi;
-
-
 
     public static MemberApi getMemberApi() {
         if (memberApi == null) {

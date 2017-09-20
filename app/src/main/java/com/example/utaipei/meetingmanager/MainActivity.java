@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Build;
-import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
@@ -147,6 +146,9 @@ public class MainActivity extends AppCompatActivity {
                             check = 2;
                             Intent intent = new Intent();
                             intent.setClass(MainActivity.this,MeetingList.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("name",response.body().get(i).getMemberName());
+                            intent.putExtras(bundle);
                             startActivity(intent);
                         }
                     }

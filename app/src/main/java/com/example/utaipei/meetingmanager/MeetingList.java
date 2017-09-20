@@ -60,6 +60,13 @@ public class MeetingList extends AppCompatActivity{
         content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
         tv.setText(content);
 
+        //member name
+        Intent intent = this.getIntent();
+        Bundle bundle = intent.getExtras();
+        String name = bundle.getString("name");
+        sh = (TextView)findViewById(R.id.show);
+        sh.setText("您好,"+name);
+
         //meeting list
         Context mContext = MeetingList.this;
         // 取得 LinearLayout 物件
@@ -102,7 +109,7 @@ public class MeetingList extends AppCompatActivity{
         timer.schedule(new scanTask(),0, 20000) ;
 
 
-        sh = (TextView)findViewById(R.id.show);
+
 
         sign0ut = (Button)findViewById(R.id.signout);
         sign0ut.setOnClickListener(signoutListener);
@@ -146,7 +153,7 @@ public class MeetingList extends AppCompatActivity{
             lcheck.setOnClickListener(checkinListener);
         }
         String text = String.valueOf(wifiList.size());
-        sh.setText(text);
+        Toast.makeText(MeetingList.this,text,Toast.LENGTH_SHORT).show();
     }
 
     //time tack of 10's
