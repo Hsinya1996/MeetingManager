@@ -17,12 +17,25 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.utaipei.meetingmanager.http.Model.MemberModel;
+import com.example.utaipei.meetingmanager.http.ServiceFactory;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private Button login;
     private static final int REQUEST_FINE_LOCATION_PERMISSION = 102 ;
     private LocationManager locateManager;
+    private EditText email,pwd;
+    private TextView ch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +82,9 @@ public class MainActivity extends AppCompatActivity {
             title.setTextColor(Color.RED);
         }
 
+        email = (EditText)findViewById(R.id.email);
+        pwd = (EditText)findViewById(R.id.pwd);
+
         login = (Button)findViewById(R.id.signIn);
         login.setOnClickListener(loginListener);
     }
@@ -96,13 +112,71 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //login action
     private Button.OnClickListener loginListener = new Button.OnClickListener(){
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent();
-            intent.setClass(MainActivity.this,MeetingList.class);
-            startActivity(intent);
+            ch = (TextView)findViewById(R.id.ch);
+            //使用Retrofit封装的方法
+            request();
+
+//            Intent intent = new Intent();
+//            intent.setClass(MainActivity.this,MeetingList.class);
+//            startActivity(intent);
         }
     };
+
+
+    public void request() {
+
+
+//        //创建Retrofit对象
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://163.21.245.147:443/") // 设置 网络请求 Url
+//                .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析
+//                .build();
+//        MemberApi request = retrofit.create(MemberApi.class);
+        //对 发送请求 进行封装
+
+        ServiceFactory.getMemberApi().getCall().enqueue(new Callback<List<MemberModel>>(){
+            @Override
+            public void onResponse(Call<List<MemberModel>> call, Response<List<MemberModel>> response) {
+                String text = String.valueOf(response.body().size());
+                String text2 = response.body().get(0).getMemberEmail();
+                ch.setText(text);
+                Toast.makeText(MainActivity.this,"connect server",Toast.LENGTH_SHORT).show();
+
+            }
+            @Override
+            public void onFailure(Call<List<MemberModel>> call, Throwable t) {
+
+            }
+        });
+
+
+
+
+
+       // if(call.isExecuted()==false){ ch.setText("fai");}
+        //ch.setText("3");
+//        call.enqueue(new Callback<MemberModel>() {
+//            //请求成功时回调
+//            @Override
+//            public void onResponse(Call<MemberModel> call, Response<MemberModel> response) {
+//                // 处理返回的数据结果
+//                response.body().getMemberEmail();
+//                response.body().getMemberPassword();
+//
+//                ch.setText("5");
+//            }
+//
+//            //请求失败时回调
+//            @Override
+//            public void onFailure(Call<MemberModel> call, Throwable throwable) {
+//                //System.out.println("FAIL");
+//                ch.setText("fail");
+//            }
+//        });
+    }
 
 }

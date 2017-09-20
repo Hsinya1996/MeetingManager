@@ -42,6 +42,7 @@
             android:layout_toEndOf="@+id/imageView">
 
             <EditText
+                android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Email"
@@ -57,10 +58,11 @@
             android:layout_alignStart="@+id/textInputLayout">
 
             <EditText
+                android:id="@+id/pwd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="密碼"
-                android:textSize="20sp"/>
+                android:textSize="20sp" />
         </android.support.design.widget.TextInputLayout>
 
         <ImageView
@@ -90,6 +92,15 @@
             android:text="------------------------OR------------------------"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/ch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="28dp"
+            android:text="TextView" />
 
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
