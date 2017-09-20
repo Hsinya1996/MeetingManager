@@ -19,7 +19,7 @@
             android:text="登入"
             android:textSize="20sp"
             android:layout_marginTop="15dp"
-            android:layout_below="@+id/textInputLayout3"
+            android:layout_below="@+id/pwdInputLayout"
             android:layout_centerHorizontal="true" />
 
         <Button
@@ -36,7 +36,7 @@
             android:layout_width="260dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="64dp"
-            android:id="@+id/textInputLayout"
+            android:id="@+id/emailInputLayout"
             app:errorEnabled="true"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/imageView">
@@ -52,10 +52,10 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="260dp"
             android:layout_height="wrap_content"
-            android:id="@+id/textInputLayout3"
+            android:id="@+id/pwdInputLayout"
             app:errorEnabled="true"
-            android:layout_below="@+id/textInputLayout"
-            android:layout_alignStart="@+id/textInputLayout">
+            android:layout_below="@+id/emailInputLayout"
+            android:layout_alignStart="@+id/emailInputLayout">
 
             <EditText
                 android:id="@+id/pwd"
@@ -80,7 +80,7 @@
             android:layout_height="35dp"
             app:srcCompat="@drawable/lock"
             android:layout_marginTop="165dp"
-            android:layout_toStartOf="@+id/textInputLayout" />
+            android:layout_toStartOf="@+id/emailInputLayout" />
 
         <TextView
             android:id="@+id/textView3"
@@ -92,15 +92,6 @@
             android:text="------------------------OR------------------------"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/ch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="28dp"
-            android:text="TextView" />
 
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
