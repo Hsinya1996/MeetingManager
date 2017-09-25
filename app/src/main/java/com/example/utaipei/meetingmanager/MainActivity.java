@@ -123,9 +123,12 @@ public class MainActivity extends AppCompatActivity {
             emailInputLayout.setError("");
             pwdInputLayout.setError("");
 
-            //使用Retrofit封装的方法
-            request();
-
+            if(!email.getText().toString().isEmpty()){
+                //使用Retrofit封装的方法
+                request();
+            }else{
+                emailInputLayout.setError("請輸入帳戶email");
+            }
         }
     };
 
@@ -147,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
                             Intent intent = new Intent();
                             intent.setClass(MainActivity.this,MeetingList.class);
                             Bundle bundle = new Bundle();
+                            bundle.putString("email",response.body().get(i).getMemberEmail());
                             bundle.putString("name",response.body().get(i).getMemberName());
                             intent.putExtras(bundle);
                             startActivity(intent);

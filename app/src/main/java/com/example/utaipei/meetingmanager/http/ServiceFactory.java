@@ -2,6 +2,7 @@ package com.example.utaipei.meetingmanager.http;
 
 
 import com.example.utaipei.meetingmanager.http.Api.MemberApi;
+import com.example.utaipei.meetingmanager.http.Api.PositionApi;
 
 /**
  * Created by Dai on 2017/4/8.
@@ -9,6 +10,7 @@ import com.example.utaipei.meetingmanager.http.Api.MemberApi;
 
 public class ServiceFactory {
     private static MemberApi memberApi;
+    private static PositionApi positionApi;
 
     public static MemberApi getMemberApi() {
         if (memberApi == null) {
@@ -17,6 +19,11 @@ public class ServiceFactory {
         return memberApi;
     }
 
-
+    public static PositionApi getPositionApi() {
+        if (positionApi == null) {
+            positionApi = ApiClient.getInstance().createService(PositionApi.class);
+        }
+        return positionApi;
+    }
 
 }

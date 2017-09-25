@@ -25,9 +25,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.utaipei.meetingmanager.http.Model.MemberModel;
+import com.example.utaipei.meetingmanager.http.Model.PositionModel;
+import com.example.utaipei.meetingmanager.http.ServiceFactory;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by cindy on 2017/7/11.
@@ -44,6 +53,7 @@ public class MeetingList extends AppCompatActivity{
     private View view;
     private LayoutInflater inflater;
     private LinearLayout ll;
+    private String email;
     final String[] titles = new String[]{ "預算審查" , "報表分析", "部門會議","預算審查" , "報表分析", "部門會議","預算審查" , "報表分析", "部門會議","報表分析", "部門會議" };
     final String[] places = new String[]{ "G509" , "C313", "H412" ,"G509" , "C313", "H412" ,"G509" , "C313", "H412","C313", "H412" };
     final String[] times = new String[]{ "9-11" , "13-16", "15-18" ,"9-11" , "13-16", "15-18" ,"9-11" , "13-16", "15-18","13-16", "15-18" };
@@ -64,6 +74,7 @@ public class MeetingList extends AppCompatActivity{
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         String name = bundle.getString("name");
+        email = bundle.getString("email");
         sh = (TextView)findViewById(R.id.show);
         sh.setText("您好,"+name);
 
@@ -123,7 +134,11 @@ public class MeetingList extends AppCompatActivity{
             super.handleMessage(msg);
             switch (msg.what) {
                 case 1:
-                    updateLists();
+                    try {
+                        updateLists();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
 
                 default:
@@ -132,7 +147,7 @@ public class MeetingList extends AppCompatActivity{
         }
     };
 
-    private void updateLists() {
+    private void updateLists() throws IOException {
         ll.removeAllViews();
         for( int i=0;i<titles.length ; ++i) {
             view = inflater.inflate(R.layout.lvitem, null, true);
@@ -152,8 +167,33 @@ public class MeetingList extends AppCompatActivity{
             ll.addView(view);
             lcheck.setOnClickListener(checkinListener);
         }
+
+        //post wifi data
         String text = String.valueOf(wifiList.size());
         Toast.makeText(MeetingList.this,text,Toast.LENGTH_SHORT).show();
+
+        for(int i=0;i<wifiList.size();i++){
+            PositionModel position = new PositionModel();
+            position.setMeetingroomId("509");
+            position.setMemberEmail(email);
+            position.setCurrentSsid(wifiList.get(i).SSID);
+            position.setWifiLevel(wifiList.get(i).level);
+            position.setMacAddress(wifiList.get(i).BSSID);
+
+            ServiceFactory.getPositionApi().getPositions(position).enqueue(new Callback<PositionModel>() {
+                @Override
+                public void onResponse(Call<PositionModel> call, Response<PositionModel> response) {
+                    //Toast.makeText(MeetingList.this,"server post",Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(Call<PositionModel> call, Throwable t) {
+
+                }
+            });
+        }
+
+
     }
 
     //time tack of 10's
