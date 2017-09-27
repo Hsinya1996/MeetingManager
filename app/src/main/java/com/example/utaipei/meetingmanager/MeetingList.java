@@ -30,6 +30,7 @@ import com.example.utaipei.meetingmanager.http.Model.PositionModel;
 import com.example.utaipei.meetingmanager.http.ServiceFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -53,8 +54,8 @@ public class MeetingList extends AppCompatActivity{
     private View view;
     private LayoutInflater inflater;
     private LinearLayout ll;
-    private String email;
-    final String[] titles = new String[]{ "預算審查" , "報表分析", "部門會議","預算審查" , "報表分析", "部門會議","預算審查" , "報表分析", "部門會議","報表分析", "部門會議" };
+    private String email,roomId=null;
+    final ArrayList<Integer> meetingId = new ArrayList<Integer>();
     final String[] places = new String[]{ "G509" , "C313", "H412" ,"G509" , "C313", "H412" ,"G509" , "C313", "H412","C313", "H412" };
     final String[] times = new String[]{ "9-11" , "13-16", "15-18" ,"9-11" , "13-16", "15-18" ,"9-11" , "13-16", "15-18","13-16", "15-18" };
     int[] a = new int[]{1,0,1,1,0,1,1,1,0,1,0};
@@ -99,10 +100,6 @@ public class MeetingList extends AppCompatActivity{
                 public void onClick(DialogInterface dialog, int which) {
                     // TODO Auto-generated method stub
                     wifiManager.setWifiEnabled(true);
-//                    if(wifiManager.WIFI_STATE_ENABLED == 3){
-//                        timer = new Timer();
-//                        timer.schedule(new scanTask(),0, 20000) ;
-//                    }
                 }
             });
             dialog.show();
@@ -118,9 +115,6 @@ public class MeetingList extends AppCompatActivity{
         SystemClock.sleep(1000);
         timer = new Timer();
         timer.schedule(new scanTask(),0, 20000) ;
-
-
-
 
         sign0ut = (Button)findViewById(R.id.signout);
         sign0ut.setOnClickListener(signoutListener);
@@ -149,13 +143,36 @@ public class MeetingList extends AppCompatActivity{
 
     private void updateLists() throws IOException {
         ll.removeAllViews();
-        for( int i=0;i<titles.length ; ++i) {
+
+        ServiceFactory.getMemberApi().getCall().enqueue(new Callback<List<MemberModel>>() {
+            @Override
+            public void onResponse(Call<List<MemberModel>> call, Response<List<MemberModel>> response) {
+                int num = response.body().size();
+                for(int i=0;i<num;i++){
+                    String mem = response.body().get(i).getMemberEmail();
+                    if(email.equals(mem)){
+                        int sign = response.body().get(i).getCheckin().size();
+                        for(int m=0;m<sign;m++){
+                            meetingId.add(response.body().get(i).getCheckin().get(m).getMeetingId());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MemberModel>> call, Throwable t) {
+
+            }
+        });
+
+
+        for( int i=0;i<meetingId.size() ; ++i) {
             view = inflater.inflate(R.layout.lvitem, null, true);
             lname = (TextView)view.findViewById(R.id.name);
             ltime =  (TextView)view.findViewById(R.id.time);
             lplace = (TextView)view.findViewById(R.id.place);
             lcheck = (Button)view.findViewById(R.id.check);
-            lname.setText(titles[i]);
+            lname.setText(meetingId.get(i));
             ltime.setText(times[i]);
             lplace.setText(places[i]);
             if(a[i]==0){
@@ -174,13 +191,13 @@ public class MeetingList extends AppCompatActivity{
 
         for(int i=0;i<wifiList.size();i++){
             PositionModel position = new PositionModel();
-            position.setMeetingroomId("509");
+            position.setMeetingroomId(roomId);
             position.setMemberEmail(email);
             position.setCurrentSsid(wifiList.get(i).SSID);
             position.setWifiLevel(wifiList.get(i).level);
             position.setMacAddress(wifiList.get(i).BSSID);
 
-            ServiceFactory.getPositionApi().getPositions(position).enqueue(new Callback<PositionModel>() {
+            ServiceFactory.getPositionApi().postPositions(position).enqueue(new Callback<PositionModel>() {
                 @Override
                 public void onResponse(Call<PositionModel> call, Response<PositionModel> response) {
                     //Toast.makeText(MeetingList.this,"server post",Toast.LENGTH_SHORT).show();

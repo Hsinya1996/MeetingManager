@@ -14,6 +14,7 @@ public class MemberModel {
     private String member_phone;
     private int gender;
     private List<PositionModel> position;
+    private List<CheckinModel> checkin;
 
 
     public void setMemberPassword(String member_password) {
@@ -63,6 +64,13 @@ public class MemberModel {
     }
     public List<PositionModel> getPosition() {
         return position;
+    }
+
+    public void setCheckin(List<CheckinModel> checkin) {
+        this.checkin = checkin;
+    }
+    public List<CheckinModel> getCheckin() {
+        return checkin;
     }
 
 }
