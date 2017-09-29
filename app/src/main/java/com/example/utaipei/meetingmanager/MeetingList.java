@@ -25,11 +25,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.utaipei.meetingmanager.http.Model.CheckinModel;
+import com.example.utaipei.meetingmanager.http.Model.MeetingModel;
+import com.example.utaipei.meetingmanager.http.Model.MeetingroomModel;
 import com.example.utaipei.meetingmanager.http.Model.MemberModel;
 import com.example.utaipei.meetingmanager.http.Model.PositionModel;
 import com.example.utaipei.meetingmanager.http.ServiceFactory;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -54,11 +58,10 @@ public class MeetingList extends AppCompatActivity{
     private View view;
     private LayoutInflater inflater;
     private LinearLayout ll;
-    private String email,roomId=null;
-    final ArrayList<Integer> meetingId = new ArrayList<Integer>();
-    final String[] places = new String[]{ "G509" , "C313", "H412" ,"G509" , "C313", "H412" ,"G509" , "C313", "H412","C313", "H412" };
-    final String[] times = new String[]{ "9-11" , "13-16", "15-18" ,"9-11" , "13-16", "15-18" ,"9-11" , "13-16", "15-18","13-16", "15-18" };
-    int[] a = new int[]{1,0,1,1,0,1,1,1,0,1,0};
+    private String email,date,time,roomId=null;
+    private final ArrayList<Integer> meetingId = new ArrayList<Integer>();
+    private final ArrayList<String> meetingroom = new ArrayList<String>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +81,10 @@ public class MeetingList extends AppCompatActivity{
         email = bundle.getString("email");
         sh = (TextView)findViewById(R.id.show);
         sh.setText("您好,"+name);
+
+        //get date
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        date = sdf.format(new java.util.Date());
 
         //meeting list
         Context mContext = MeetingList.this;
@@ -143,47 +150,12 @@ public class MeetingList extends AppCompatActivity{
 
     private void updateLists() throws IOException {
         ll.removeAllViews();
+        meetingId.clear();
+        meetingroom.clear();
 
-        ServiceFactory.getMemberApi().getCall().enqueue(new Callback<List<MemberModel>>() {
-            @Override
-            public void onResponse(Call<List<MemberModel>> call, Response<List<MemberModel>> response) {
-                int num = response.body().size();
-                for(int i=0;i<num;i++){
-                    String mem = response.body().get(i).getMemberEmail();
-                    if(email.equals(mem)){
-                        int sign = response.body().get(i).getCheckin().size();
-                        for(int m=0;m<sign;m++){
-                            meetingId.add(response.body().get(i).getCheckin().get(m).getMeetingId());
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<MemberModel>> call, Throwable t) {
-
-            }
-        });
-
-
-        for( int i=0;i<meetingId.size() ; ++i) {
-            view = inflater.inflate(R.layout.lvitem, null, true);
-            lname = (TextView)view.findViewById(R.id.name);
-            ltime =  (TextView)view.findViewById(R.id.time);
-            lplace = (TextView)view.findViewById(R.id.place);
-            lcheck = (Button)view.findViewById(R.id.check);
-            lname.setText(meetingId.get(i));
-            ltime.setText(times[i]);
-            lplace.setText(places[i]);
-            if(a[i]==0){
-                lcheck.setVisibility(View.INVISIBLE);
-                a[i]=1;
-            }else{
-                a[i]=0;
-            }
-            ll.addView(view);
-            lcheck.setOnClickListener(checkinListener);
-        }
+        //get time
+        SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm");
+        time = sdf2.format(new java.util.Date());
 
         //post wifi data
         String text = String.valueOf(wifiList.size());
@@ -209,9 +181,143 @@ public class MeetingList extends AppCompatActivity{
                 }
             });
         }
-
+        getMemberCheckin();
 
     }
+
+    //get meetings which member sign up
+    public void getMemberCheckin(){
+
+        ServiceFactory.getMemberApi().getCall().enqueue(new Callback<List<MemberModel>>() {
+            @Override
+            public void onResponse(Call<List<MemberModel>> call, Response<List<MemberModel>> response) {
+                int num = response.body().size();
+                for(int i=0;i<num;i++){
+                    String mem = response.body().get(i).getMemberEmail();
+                    if(email.equals(mem)){
+                        int sign = response.body().get(i).getCheckin().size();
+                        for(int m=0;m<sign;m++){
+                            meetingId.add(response.body().get(i).getCheckin().get(m).getMeetingId());
+                        }
+                    }
+                }
+                //Toast.makeText(MeetingList.this,String.valueOf(meetingId.size()),Toast.LENGTH_SHORT).show();
+                //getMeetingInfo();
+                checkRoomWifi();
+            }
+
+            @Override
+            public void onFailure(Call<List<MemberModel>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void checkRoomWifi(){
+        ServiceFactory.getMeetingApi().getCall().enqueue(new Callback<List<MeetingModel>>() {
+            @Override
+            public void onResponse(Call<List<MeetingModel>> call, Response<List<MeetingModel>> response) {
+                int num = response.body().size();
+                for(int i=0;i<meetingId.size();i++){
+                    for(int m=0;m<num;m++){
+                        if(meetingId.get(i)==response.body().get(m).getMeetingId()){
+                            if(response.body().get(m).getMeetingDate().equals(date)){
+                                final String roomId = response.body().get(m).getMeetingroomId();
+                                //get meetingroom information
+                                ServiceFactory.getMeetingroomApi().getCall().enqueue(new Callback<List<MeetingroomModel>>() {
+                                    @Override
+                                    public void onResponse(Call<List<MeetingroomModel>> call, Response<List<MeetingroomModel>> response) {
+                                        int n = response.body().size();
+                                        for(int k=0;k<n;k++){
+                                            if(roomId.equals(response.body().get(k).getRoomId())){
+                                                for(int v=0;v<wifiList.size();v++){
+                                                    if(wifiList.get(v).SSID.equals(response.body().get(k).getMeetingroomSsid()) && wifiList.get(v).BSSID.equals(response.body().get(k).getMacAddress()) ){
+                                                        Toast.makeText(MeetingList.this,response.body().get(k).getRoomId(),Toast.LENGTH_SHORT).show();
+                                                        meetingroom.add(response.body().get(k).getRoomId());
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<List<MeetingroomModel>> call, Throwable t) {
+
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+                getMeetingInfo();
+            }
+
+            @Override
+            public void onFailure(Call<List<MeetingModel>> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    //get meeting information
+    public void getMeetingInfo(){
+
+        ServiceFactory.getMeetingApi().getCall().enqueue(new Callback<List<MeetingModel>>() {
+            @Override
+            public void onResponse(Call<List<MeetingModel>> call, Response<List<MeetingModel>> response) {
+                int num = response.body().size();
+                for(int i=0;i<meetingId.size();i++){
+                    for(int m=0;m<num;m++){
+                        if(meetingId.get(i)==response.body().get(m).getMeetingId()){
+                            if(response.body().get(m).getMeetingDate().equals(date)){
+                                view = inflater.inflate(R.layout.lvitem, null, true);
+                                lname = (TextView)view.findViewById(R.id.name);
+                                ltime =  (TextView)view.findViewById(R.id.time);
+                                lplace = (TextView)view.findViewById(R.id.place);
+                                lcheck = (Button)view.findViewById(R.id.check);
+                                lname.setText(response.body().get(m).getMeetingName());
+                                String[] st = response.body().get(m).getMeetingStarttime().split(":");
+                                String[] et = response.body().get(m).getMeetingEndtime().split(":");
+                                String tt = st[0]+":"+st[1]+"-"+et[0]+":"+et[1];
+                                ltime.setText(tt);
+                                final String roomId = response.body().get(m).getMeetingroomId();
+                                lplace.setText(roomId);
+                                String[] time2 = time.split(":");
+                                //check time
+                                if(Integer.valueOf(time2[0])<Integer.valueOf(et[0])){
+                                    for(int j=0;j<meetingroom.size();j++){
+                                        if(roomId.equals(meetingroom.get(j))){
+                                            lcheck.setVisibility(View.VISIBLE);
+                                        }
+                                    }
+                                }else if(Integer.valueOf(time2[0])==Integer.valueOf(et[0])){
+                                    if(Integer.valueOf(time2[1])<=Integer.valueOf(et[1])){
+                                        for(int j=0;j<meetingroom.size();j++){
+                                            if(roomId.equals(meetingroom.get(j))){
+                                                lcheck.setVisibility(View.VISIBLE);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                ll.addView(view);
+                                lcheck.setOnClickListener(checkinListener);
+
+
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MeetingModel>> call, Throwable t) {
+
+            }
+        });
+    }
+
 
     //time tack of 10's
     private class scanTask extends TimerTask {
@@ -232,9 +338,6 @@ public class MeetingList extends AppCompatActivity{
         @Override
         public void onReceive(Context c, Intent intent) {
             wifiList = wifiManager.getScanResults();
-            String text = String.valueOf(wifiList.size());
-            String text2 = String.valueOf(wifiList.get(1).level);
-            Toast.makeText(MeetingList.this,text,Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -243,9 +346,10 @@ public class MeetingList extends AppCompatActivity{
     private Button.OnClickListener checkinListener = new Button.OnClickListener(){
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent();
-            intent.setClass(MeetingList.this,Meeting.class);
-            startActivity(intent);
+            Toast.makeText(MeetingList.this,roomId,Toast.LENGTH_SHORT).show();
+//            Intent intent = new Intent();
+//            intent.setClass(MeetingList.this,Meeting.class);
+//            startActivity(intent);
         }
     };
 
@@ -253,10 +357,25 @@ public class MeetingList extends AppCompatActivity{
     private Button.OnClickListener signoutListener = new Button.OnClickListener(){
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent();
-            intent.setClass(MeetingList.this,MainActivity.class);
-            startActivity(intent);
-            MeetingList.this.finish();
+            CheckinModel checkin = new CheckinModel();
+            checkin.setMemberEmail(email);
+            SimpleDateFormat sdf3 = new SimpleDateFormat("HH:mm:ss");
+            checkin.setLogoutTime(sdf3.format(new java.util.Date()));
+            ServiceFactory.getCheckinApi().postCheckin(checkin).enqueue(new Callback<CheckinModel>() {
+                @Override
+                public void onResponse(Call<CheckinModel> call, Response<CheckinModel> response) {
+                    Intent intent = new Intent();
+                    intent.setClass(MeetingList.this,MainActivity.class);
+                    startActivity(intent);
+                    MeetingList.this.finish();
+                }
+
+                @Override
+                public void onFailure(Call<CheckinModel> call, Throwable t) {
+
+                }
+            });
+
         }
     };
 

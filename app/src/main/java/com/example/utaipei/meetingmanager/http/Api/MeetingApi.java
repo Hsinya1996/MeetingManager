@@ -15,5 +15,7 @@ import retrofit2.http.Headers;
 
 public interface MeetingApi {
     @Headers("Content-Type: application/json")
+    @GET("meeting")
     Call<List<MeetingModel>> getCall();
 }
+

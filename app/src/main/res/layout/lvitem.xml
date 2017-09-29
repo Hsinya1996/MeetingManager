@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,7 +11,7 @@
 
         <TextView
             android:id="@+id/name"
-            android:layout_width="wrap_content"
+            android:layout_width="120sp"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/check"
             android:layout_alignBottom="@+id/check"
@@ -23,9 +24,8 @@
             android:id="@+id/place"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/check"
-            android:layout_marginStart="39dp"
-            android:layout_toEndOf="@+id/name"
+            android:layout_alignStart="@+id/time"
+            android:layout_below="@+id/time"
             android:text="會議地點"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
@@ -34,8 +34,9 @@
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/place"
-            android:layout_alignStart="@+id/place"
+            android:layout_below="@+id/view"
+            android:layout_marginStart="11dp"
+            android:layout_toEndOf="@+id/name"
             android:text="會議時間"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
@@ -45,15 +46,17 @@
             android:layout_width="70dp"
             android:layout_height="45dp"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
+            android:layout_below="@+id/view"
             android:focusable="false"
             android:text="報到"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:visibility="invisible" />
 
         <View
+            android:id="@+id/view"
             android:layout_width="match_parent"
+
             android:layout_height="2dip"
-            android:layout_alignBottom="@+id/place"
-            android:background="?android:attr/colorButtonNormal" />
+            android:background="@android:color/darker_gray" />
     </RelativeLayout>
 </LinearLayout>
