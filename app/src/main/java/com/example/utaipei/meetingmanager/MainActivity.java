@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.LocationManager;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.design.widget.TextInputLayout;
@@ -33,6 +34,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private Button login;
+    private WifiManager wifiManager;
     private static final int REQUEST_FINE_LOCATION_PERMISSION = 102 ;
     private LocationManager locateManager;
     private TextInputLayout emailInputLayout,pwdInputLayout;
@@ -56,6 +58,31 @@ public class MainActivity extends AppCompatActivity {
             // for ActivityCompat#requestPermissions for more details.
 
             requestLocationPermission(); // 詢問使用者開啟權限
+        }
+
+        //開啟wifi
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if(!wifiManager.isWifiEnabled())
+        {
+            AlertDialog dialog = new AlertDialog.Builder(this).create();
+            dialog.setTitle("警示");
+            dialog.setMessage("你的Wi-Fi並沒有開啟, 是否開啟?");
+            //dialog.setIconAttribute(android.R.attr.alertDialogIcon);
+            dialog.setCancelable(false);
+            dialog.setButton(DialogInterface.BUTTON_POSITIVE,"確認", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // TODO Auto-generated method stub
+                    wifiManager.setWifiEnabled(true);
+                }
+            });
+            dialog.show();
+            Button btnPositive =
+                    dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE);
+            btnPositive.setTextColor(getResources().getColor(R.color.colorAccent));
+            btnPositive.setTextSize(16);
+            Window window = dialog.getWindow();
+            TextView title = (TextView)window.findViewById(R.id.alertTitle);
+            title.setTextColor(Color.RED);
         }
 
         //開啟GPS

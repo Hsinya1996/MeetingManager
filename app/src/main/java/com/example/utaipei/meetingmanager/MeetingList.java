@@ -102,32 +102,12 @@ public class MeetingList extends AppCompatActivity{
 
         //開啟wifi
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if(!wifiManager.isWifiEnabled())
-        {
-            AlertDialog dialog = new AlertDialog.Builder(this).create();
-            dialog.setTitle("警示");
-            dialog.setMessage("你的Wi-Fi並沒有開啟, 是否開啟?");
-            //dialog.setIconAttribute(android.R.attr.alertDialogIcon);
-            dialog.setCancelable(false);
-            dialog.setButton(DialogInterface.BUTTON_POSITIVE,"確認", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    // TODO Auto-generated method stub
-                    wifiManager.setWifiEnabled(true);
-                }
-            });
-            dialog.show();
-            Button btnPositive =
-                    dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE);
-            btnPositive.setTextColor(getResources().getColor(R.color.colorAccent));
-            btnPositive.setTextSize(16);
-            Window window = dialog.getWindow();
-            TextView title = (TextView)window.findViewById(R.id.alertTitle);
-            title.setTextColor(Color.RED);
+        if(wifiManager.isWifiEnabled()){
+            timer = new Timer();
+            timer.schedule(new scanTask(),0, 20000) ;
         }
 
-        SystemClock.sleep(1000);
-        timer = new Timer();
-        timer.schedule(new scanTask(),0, 20000) ;
+
 
         sign0ut = (Button)findViewById(R.id.signout);
         sign0ut.setOnClickListener(signoutListener);
@@ -383,7 +363,12 @@ public class MeetingList extends AppCompatActivity{
             checkin.setMemberEmail(email);
             checkin.setMeetingId(checkBtn);
             SimpleDateFormat sdf4 = new SimpleDateFormat("HH:mm:ss");
-            checkin.setLoginTime(sdf4.format(new java.util.Date()));
+            if(lcheck.getText().equals("報到")){
+                checkin.setLoginTime(sdf4.format(new java.util.Date()));
+            }else if(lcheck.getText().equals("進場")){
+                checkin.setLogoutTime(sdf4.format(new java.util.Date()));
+            }
+
             ServiceFactory.getCheckinApi().postCheckin(checkin).enqueue(new Callback<CheckinModel>() {
                 @Override
                 public void onResponse(Call<CheckinModel> call, Response<CheckinModel> response) {
