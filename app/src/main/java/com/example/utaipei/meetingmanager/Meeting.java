@@ -1,5 +1,6 @@
 package com.example.utaipei.meetingmanager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -16,15 +17,23 @@ import java.util.List;
  */
 
 public class Meeting extends AppCompatActivity {
-
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     public static int lastPosition = 0;
+    MeetingIntro meetingIntro = new MeetingIntro();
+    MeetingFeedback meetingFeedback = new MeetingFeedback();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.meeting);
+
+        //transfer data to fragment
+        Intent intent = this.getIntent();
+        Bundle bundle = intent.getExtras();
+        meetingIntro.setArguments(bundle);
+        meetingFeedback.setArguments(bundle);
+
 
         mViewPager = (ViewPager)findViewById(R.id.container);
 
@@ -47,9 +56,9 @@ public class Meeting extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new MeetingIntro(), "會議簡介");
+        adapter.addFragment(meetingIntro, "會議簡介");
         adapter.addFragment(new MeetingRTC(), "RTC");
-        adapter.addFragment(new MeetingFeedback(), "回饋單");
+        adapter.addFragment(meetingFeedback, "回饋單");
 
         viewPager.setAdapter(adapter);
     }
@@ -81,6 +90,11 @@ public class Meeting extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
 }

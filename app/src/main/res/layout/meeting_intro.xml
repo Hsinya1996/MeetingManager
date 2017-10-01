@@ -15,7 +15,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="36dp"
             android:layout_marginTop="19dp"
-            android:text="會議名稱:"
+            android:text="名稱:"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
@@ -26,7 +26,6 @@
             android:layout_alignBottom="@+id/textView8"
             android:layout_marginStart="13dp"
             android:layout_toEndOf="@+id/textView8"
-            android:text="name"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
@@ -47,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/textView10"
             android:layout_below="@+id/textView10"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="11dp"
             android:text="地點:"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
@@ -59,7 +58,6 @@
             android:layout_alignBaseline="@+id/textView10"
             android:layout_alignBottom="@+id/textView10"
             android:layout_alignStart="@+id/name"
-            android:text="time"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
@@ -69,7 +67,6 @@
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/time"
             android:layout_alignTop="@+id/textView12"
-            android:text="place"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
@@ -79,7 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/textView12"
             android:layout_below="@+id/textView12"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="11dp"
             android:text="主講人:"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
@@ -88,9 +85,8 @@
             android:id="@+id/speaker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/textView15"
-            android:layout_alignStart="@+id/place"
-            android:text="speaker"
+            android:layout_above="@+id/textView17"
+            android:layout_toEndOf="@+id/textView17"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
@@ -101,17 +97,7 @@
             android:layout_alignStart="@+id/textView15"
             android:layout_below="@+id/textView15"
             android:layout_marginTop="11dp"
-            android:text="列席人員:"
-            android:textColor="@android:color/black"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/people"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/textView17"
-            android:layout_alignStart="@+id/speaker"
-            android:text="people"
+            android:text="主辦單位:"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
@@ -122,7 +108,7 @@
             android:layout_alignStart="@+id/textView17"
             android:layout_below="@+id/textView17"
             android:layout_marginTop="11dp"
-            android:text="會議內容:"
+            android:text="列席人員:"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
@@ -130,12 +116,43 @@
             android:id="@+id/content"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textView4"
+            android:layout_below="@+id/textView4"
+            android:layout_marginTop="11dp"
+            android:scrollbars="vertical"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignStart="@+id/textView19"
             android:layout_below="@+id/textView19"
             android:layout_marginTop="11dp"
-            android:scrollbars="vertical"
-            android:text="content"
+            android:text="會議內容:"
             android:textColor="@android:color/black"
-            android:textSize="18sp" />
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/organizer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView17"
+            android:layout_alignBottom="@+id/textView17"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/speaker"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/people"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/textView19"
+            android:layout_alignStart="@+id/organizer"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
     </RelativeLayout>
 </LinearLayout>
