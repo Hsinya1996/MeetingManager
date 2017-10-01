@@ -1,5 +1,7 @@
 package com.example.utaipei.meetingmanager.http.Model;
 
+import java.util.List;
+
 /**
  * Created by cindy on 2017/9/26.
  */
@@ -19,6 +21,7 @@ public class MeetingModel {
     private int fare;
     private String address;
     private int attendance;
+    private List<FeedbackModel> feedback;
 
     public void setMeetingId(int meeting_id){ this.meeting_id = meeting_id; }
     public int getMeetingId(){ return meeting_id; }
@@ -61,4 +64,11 @@ public class MeetingModel {
 
     public void setAttendance(int attendance){ this.attendance = attendance; }
     public int getAttendance(){ return attendance; }
+
+    public void setFeedback(List<FeedbackModel> feedback) {
+        this.feedback = feedback;
+    }
+    public List<FeedbackModel> getFeedback() {
+        return feedback;
+    }
 }

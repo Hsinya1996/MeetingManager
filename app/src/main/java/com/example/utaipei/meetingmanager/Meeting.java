@@ -17,7 +17,6 @@ import java.util.List;
  */
 
 public class Meeting extends AppCompatActivity {
-
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     public static int lastPosition = 0;

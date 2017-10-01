@@ -2,11 +2,13 @@ package com.example.utaipei.meetingmanager.http;
 
 
 import com.example.utaipei.meetingmanager.http.Api.CheckinApi;
+import com.example.utaipei.meetingmanager.http.Api.FeedbackApi;
 import com.example.utaipei.meetingmanager.http.Api.MeetingApi;
 import com.example.utaipei.meetingmanager.http.Api.MeetingroomApi;
 import com.example.utaipei.meetingmanager.http.Api.MemberApi;
 import com.example.utaipei.meetingmanager.http.Api.PositionApi;
 import com.example.utaipei.meetingmanager.http.Model.CheckinModel;
+import com.example.utaipei.meetingmanager.http.Model.FeedbackModel;
 
 /**
  * Created by Dai on 2017/4/8.
@@ -18,6 +20,7 @@ public class ServiceFactory {
     private static MeetingroomApi meetingroomApi;
     private static CheckinApi checkinApi;
     private static MeetingApi meetingApi;
+    private static FeedbackApi feedbackApi;
 
     public static MemberApi getMemberApi() {
         if (memberApi == null) {
@@ -52,5 +55,12 @@ public class ServiceFactory {
             meetingApi = ApiClient.getInstance().createService(MeetingApi.class);
         }
         return meetingApi;
+    }
+
+    public static FeedbackApi getFeedbackApi() {
+        if (feedbackApi == null) {
+            feedbackApi = ApiClient.getInstance().createService(FeedbackApi.class);
+        }
+        return feedbackApi;
     }
 }

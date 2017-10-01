@@ -20,7 +20,7 @@
             android:textSize="20sp" />
 
         <RadioGroup
-            android:id="@+id/radioGroup2"
+            android:id="@+id/timeRadioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/textView2"
@@ -29,14 +29,14 @@
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/radioButton"
+                android:id="@+id/time_good"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="滿意"
                 android:textSize="16sp" />
 
             <RadioButton
-                android:id="@+id/radioButton2"
+                android:id="@+id/time_soso"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -44,7 +44,7 @@
                 android:textSize="16sp" />
 
             <RadioButton
-                android:id="@+id/radioButton3"
+                android:id="@+id/time_bad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -57,22 +57,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/textView2"
-            android:layout_below="@+id/radioGroup2"
+            android:layout_below="@+id/timeRadioGroup"
             android:layout_marginTop="24dp"
             android:text="會議地點:"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
         <RadioGroup
-            android:id="@+id/radioGroup3"
+            android:id="@+id/locationRadioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/textView5"
-            android:layout_alignStart="@+id/radioGroup2"
+            android:layout_alignStart="@+id/timeRadioGroup"
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/radioButton4"
+                android:id="@+id/location_good"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -80,7 +80,7 @@
                 android:textSize="16sp" />
 
             <RadioButton
-                android:id="@+id/radioButton5"
+                android:id="@+id/location_soso"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -88,7 +88,7 @@
                 android:textSize="16sp" />
 
             <RadioButton
-                android:id="@+id/radioButton6"
+                android:id="@+id/location_bad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -109,15 +109,15 @@
             android:textSize="20sp" />
 
         <RadioGroup
-            android:id="@+id/radioGroup4"
+            android:id="@+id/itineraryRadioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/textView6"
-            android:layout_alignStart="@+id/radioGroup3"
+            android:layout_alignStart="@+id/locationRadioGroup"
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/radioButton7"
+                android:id="@+id/itinerary_good"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -125,7 +125,7 @@
                 android:textSize="16sp" />
 
             <RadioButton
-                android:id="@+id/radioButton8"
+                android:id="@+id/itinerary_soso"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -133,7 +133,7 @@
                 android:textSize="16sp" />
 
             <RadioButton
-                android:id="@+id/radioButton9"
+                android:id="@+id/itinerary_bad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -154,22 +154,22 @@
             android:textSize="20sp" />
 
         <EditText
-            android:id="@+id/editText3"
+            android:id="@+id/suggestion"
             android:layout_width="310dp"
             android:layout_height="120dp"
             android:ems="10"
             android:inputType="textMultiLine"
-            android:scrollbars="vertical"
             android:maxLines="5"
+            android:scrollbars="vertical"
             android:layout_below="@+id/textView7"
             android:layout_alignStart="@+id/textView7" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_alignStart="@+id/radioGroup4"
+            android:layout_alignStart="@+id/itineraryRadioGroup"
             android:layout_marginBottom="57dp"
             android:layout_marginStart="17dp"
             android:text="送出"
