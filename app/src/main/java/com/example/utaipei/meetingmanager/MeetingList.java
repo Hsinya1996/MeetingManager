@@ -56,12 +56,14 @@ public class MeetingList extends AppCompatActivity{
     private LinearLayout ll;
     private String email,date,time,roomId=null;
     private final ArrayList<Integer> meetingId = new ArrayList<Integer>();
+    private final ArrayList<String> roomIds = new ArrayList<String>();
     private final ArrayList<String> meetingroom = new ArrayList<String>();
     public ArrayList<Integer> meetingMap = new ArrayList<Integer>();
     public ArrayList<Integer> btnList = new ArrayList<Integer>();
     public ArrayList<String> roomMap = new ArrayList<String>();
     private int btnId;
     private int checkBtn = -1;
+    private String checkRoom = "";
 
 
     @Override
@@ -132,6 +134,7 @@ public class MeetingList extends AppCompatActivity{
     private void updateLists() throws IOException {
         ll.removeAllViews();
         meetingId.clear();
+        roomIds.clear();
         meetingroom.clear();
         btnList.clear();
         meetingMap.clear();
@@ -170,6 +173,7 @@ public class MeetingList extends AppCompatActivity{
         CheckinModel checkin = new CheckinModel();
         checkin.setMemberEmail(email);
         checkin.setMeetingId(checkBtn);
+        checkin.setMeetingroomId(checkRoom);
         checkin.setLogoutTime(time);
         ServiceFactory.getCheckinApi().postCheckin(checkin).enqueue(new Callback<CheckinModel>() {
             @Override
@@ -182,7 +186,6 @@ public class MeetingList extends AppCompatActivity{
 
             }
         });
-
     }
 
     //get meetings which member sign up
@@ -198,10 +201,11 @@ public class MeetingList extends AppCompatActivity{
                         int sign = response.body().get(i).getCheckin().size();
                         for(int m=0;m<sign;m++){
                             meetingId.add(response.body().get(i).getCheckin().get(m).getMeetingId());
+                            roomIds.add(response.body().get(i).getCheckin().get(m).getMeetingroomId());
                         }
                     }
                 }
-                //Toast.makeText(MeetingList.this,String.valueOf(meetingId.size()),Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MeetingList.this,String.valueOf(roomIds.size()),Toast.LENGTH_SHORT).show();
                 //getMeetingInfo();
                 checkRoomWifi();
             }
@@ -214,49 +218,33 @@ public class MeetingList extends AppCompatActivity{
     }
 
     public void checkRoomWifi(){
-        ServiceFactory.getMeetingApi().getCall().enqueue(new Callback<List<MeetingModel>>() {
+        //get meetingroom information.
+        ServiceFactory.getMeetingroomApi().getCall().enqueue(new Callback<List<MeetingroomModel>>() {
             @Override
-            public void onResponse(Call<List<MeetingModel>> call, Response<List<MeetingModel>> response) {
-                int num = response.body().size();
-                for(int i=0;i<meetingId.size();i++){
-                    for(int m=0;m<num;m++){
-                        if(meetingId.get(i)==response.body().get(m).getMeetingId()){
-                            if(response.body().get(m).getMeetingDate().equals(date)){
-                                final String roomId = response.body().get(m).getMeetingroomId();
-                                //get meetingroom information
-                                ServiceFactory.getMeetingroomApi().getCall().enqueue(new Callback<List<MeetingroomModel>>() {
-                                    @Override
-                                    public void onResponse(Call<List<MeetingroomModel>> call, Response<List<MeetingroomModel>> response) {
-                                        int n = response.body().size();
-                                        for(int k=0;k<n;k++){
-                                            if(roomId.equals(response.body().get(k).getRoomId())){
-                                                for(int v=0;v<wifiList.size();v++){
-                                                    if(wifiList.get(v).SSID.equals(response.body().get(k).getMeetingroomSsid()) && wifiList.get(v).BSSID.equals(response.body().get(k).getMacAddress()) ){
-                                                        //Toast.makeText(MeetingList.this,response.body().get(k).getRoomId(),Toast.LENGTH_SHORT).show();
-                                                        meetingroom.add(response.body().get(k).getRoomId());
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<List<MeetingroomModel>> call, Throwable t) {
-
-                                    }
-                                });
+            public void onResponse(Call<List<MeetingroomModel>> call, Response<List<MeetingroomModel>> response) {
+                int n = response.body().size();
+                for(int i=0;i<roomIds.size();i++){
+                    for(int k=0;k<n;k++) {
+                        if(roomIds.get(i).equals(response.body().get(k).getRoomId())){
+                            for(int v=0;v<wifiList.size();v++){
+                                if(wifiList.get(v).SSID.equals(response.body().get(k).getMeetingroomSsid()) && wifiList.get(v).BSSID.equals(response.body().get(k).getMacAddress()) ){
+                                    Toast.makeText(MeetingList.this,response.body().get(k).getRoomId(),Toast.LENGTH_SHORT).show();
+                                    meetingroom.add(response.body().get(k).getRoomId());
+                                }
                             }
                         }
                     }
                 }
+                //Toast.makeText(MeetingList.this,String.valueOf(meetingroom.size()),Toast.LENGTH_SHORT).show();
                 getMeetingInfo();
             }
 
             @Override
-            public void onFailure(Call<List<MeetingModel>> call, Throwable t) {
+            public void onFailure(Call<List<MeetingroomModel>> call, Throwable t) {
 
             }
         });
+
 
     }
 
@@ -357,6 +345,7 @@ public class MeetingList extends AppCompatActivity{
             CheckinModel checkin = new CheckinModel();
             checkin.setMemberEmail(email);
             checkin.setMeetingId(checkBtn);
+            checkin.setMeetingroomId(roomId);
             SimpleDateFormat sdf4 = new SimpleDateFormat("HH:mm:ss");
             if(lcheck.getText().equals("報到")){
                 checkin.setLoginTime(sdf4.format(new java.util.Date()));
@@ -392,6 +381,7 @@ public class MeetingList extends AppCompatActivity{
             CheckinModel checkin = new CheckinModel();
             checkin.setMemberEmail(email);
             checkin.setMeetingId(checkBtn);
+            checkin.setMeetingroomId(roomId);
             SimpleDateFormat sdf3 = new SimpleDateFormat("HH:mm:ss");
             checkin.setLogoutTime(sdf3.format(new java.util.Date()));
             ServiceFactory.getCheckinApi().postCheckin(checkin).enqueue(new Callback<CheckinModel>() {
