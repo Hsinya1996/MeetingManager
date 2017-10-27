@@ -156,8 +156,9 @@ public class MeetingList extends AppCompatActivity{
             position.setCurrentSsid(wifiList.get(i).SSID);
             position.setWifiLevel(wifiList.get(i).level);
             position.setMacAddress(wifiList.get(i).BSSID);
+            String mac = wifiList.get(i).BSSID;
 
-            ServiceFactory.getPositionApi().postPositions(position).enqueue(new Callback<PositionModel>() {
+            ServiceFactory.getPositionApi().postPositions(email,mac,position).enqueue(new Callback<PositionModel>() {
                 @Override
                 public void onResponse(Call<PositionModel> call, Response<PositionModel> response) {
                     //Toast.makeText(MeetingList.this,"server post",Toast.LENGTH_SHORT).show();
