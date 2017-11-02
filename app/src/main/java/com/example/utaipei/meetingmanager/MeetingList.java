@@ -102,7 +102,7 @@ public class MeetingList extends AppCompatActivity{
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if(wifiManager.isWifiEnabled()){
             timer = new Timer();
-            timer.schedule(new scanTask(),0, 20000) ;
+            timer.schedule(new scanTask(),0, 30000) ;
         }
 
 
@@ -149,7 +149,7 @@ public class MeetingList extends AppCompatActivity{
 
         //post wifi data
         String text = String.valueOf(wifiList.size());
-        Toast.makeText(MeetingList.this,text,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(MeetingList.this,text,Toast.LENGTH_SHORT).show();
 
         for(int i=0;i<wifiList.size();i++){
             PositionModel position = new PositionModel();
@@ -221,6 +221,7 @@ public class MeetingList extends AppCompatActivity{
                     }
                 }
                 //Toast.makeText(MeetingList.this,String.valueOf(roomIds.size()),Toast.LENGTH_SHORT).show();
+                //getMeetingInfo();
                 checkRoomWifi();
             }
 
@@ -334,7 +335,7 @@ public class MeetingList extends AppCompatActivity{
             wifiReciever = new WifiScanReceiver();
             registerReceiver(wifiReciever, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
             wifiManager.startScan();
-            SystemClock.sleep(1000);
+            SystemClock.sleep(800);
             Message msg = new Message();
             msg.what = 1;
             mHandler.sendMessage(msg);
@@ -365,6 +366,7 @@ public class MeetingList extends AppCompatActivity{
                     login_time = logintime.get(i);
                 }
             }
+
             if(login_time==null){
                 CheckinModel checkin = new CheckinModel();
                 checkin.setMemberEmail(email);
