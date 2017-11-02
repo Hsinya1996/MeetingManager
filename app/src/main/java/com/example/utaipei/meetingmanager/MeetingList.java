@@ -57,13 +57,14 @@ public class MeetingList extends AppCompatActivity{
     private String email,date,time,roomId=null;
     private final ArrayList<Integer> meetingId = new ArrayList<Integer>();
     private final ArrayList<String> roomIds = new ArrayList<String>();
+    private final ArrayList<String> logintime = new ArrayList<String>();
     private final ArrayList<String> meetingroom = new ArrayList<String>();
     public ArrayList<Integer> meetingMap = new ArrayList<Integer>();
     public ArrayList<Integer> btnList = new ArrayList<Integer>();
     public ArrayList<String> roomMap = new ArrayList<String>();
     private int btnId;
     private int checkBtn = -1;
-    private String checkRoom = "";
+    private String login_time = null;
 
 
     @Override
@@ -136,13 +137,14 @@ public class MeetingList extends AppCompatActivity{
         meetingId.clear();
         roomIds.clear();
         meetingroom.clear();
+        logintime.clear();
         btnList.clear();
         meetingMap.clear();
         roomMap.clear();
         btnId = 0;
 
         //get time
-        SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss");
         time = sdf2.format(new java.util.Date());
 
         //post wifi data
@@ -156,6 +158,8 @@ public class MeetingList extends AppCompatActivity{
             position.setCurrentSsid(wifiList.get(i).SSID);
             position.setWifiLevel(wifiList.get(i).level);
             position.setMacAddress(wifiList.get(i).BSSID);
+            String wifitime = date+" "+time;
+            position.setWifiTime(wifitime);
             String mac = wifiList.get(i).BSSID;
 
             ServiceFactory.getPositionApi().postPositions(email,mac,position).enqueue(new Callback<PositionModel>() {
@@ -166,27 +170,36 @@ public class MeetingList extends AppCompatActivity{
 
                 @Override
                 public void onFailure(Call<PositionModel> call, Throwable t) {
+                    //Toast.makeText(MeetingList.this,"fail",Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+
+        if(checkBtn==-1){
+            getMemberCheckin();
+        }else{
+            CheckinModel checkin = new CheckinModel();
+            checkin.setMemberEmail(email);
+            checkin.setMeetingId(checkBtn);
+            checkin.setMeetingroomId(roomId);
+            checkin.setLoginTime(login_time);
+            checkin.setLogoutTime(time);
+            String id = String.valueOf(checkBtn);
+            ServiceFactory.getCheckinApi().postCheckin(email,id,checkin).enqueue(new Callback<CheckinModel>() {
+                @Override
+                public void onResponse(Call<CheckinModel> call, Response<CheckinModel> response) {
+                    //Toast.makeText(MeetingList.this,"success",Toast.LENGTH_SHORT).show();
+                    getMemberCheckin();
+                }
+
+                @Override
+                public void onFailure(Call<CheckinModel> call, Throwable t) {
 
                 }
             });
         }
 
-        CheckinModel checkin = new CheckinModel();
-        checkin.setMemberEmail(email);
-        checkin.setMeetingId(checkBtn);
-        checkin.setMeetingroomId(checkRoom);
-        checkin.setLogoutTime(time);
-        ServiceFactory.getCheckinApi().postCheckin(checkin).enqueue(new Callback<CheckinModel>() {
-            @Override
-            public void onResponse(Call<CheckinModel> call, Response<CheckinModel> response) {
-                getMemberCheckin();
-            }
-
-            @Override
-            public void onFailure(Call<CheckinModel> call, Throwable t) {
-
-            }
-        });
     }
 
     //get meetings which member sign up
@@ -203,11 +216,11 @@ public class MeetingList extends AppCompatActivity{
                         for(int m=0;m<sign;m++){
                             meetingId.add(response.body().get(i).getCheckin().get(m).getMeetingId());
                             roomIds.add(response.body().get(i).getCheckin().get(m).getMeetingroomId());
+                            logintime.add(response.body().get(i).getCheckin().get(m).getLoginTime());
                         }
                     }
                 }
                 //Toast.makeText(MeetingList.this,String.valueOf(roomIds.size()),Toast.LENGTH_SHORT).show();
-                //getMeetingInfo();
                 checkRoomWifi();
             }
 
@@ -265,6 +278,9 @@ public class MeetingList extends AppCompatActivity{
                                 ltime =  (TextView)view.findViewById(R.id.time);
                                 lplace = (TextView)view.findViewById(R.id.place);
                                 lcheck = (Button)view.findViewById(R.id.check);
+                                if(logintime.get(i)!=null){
+                                    lcheck.setText("進場");
+                                }
                                 lname.setText(response.body().get(m).getMeetingName());
                                 String[] st = response.body().get(m).getMeetingStarttime().split(":");
                                 String[] et = response.body().get(m).getMeetingEndtime().split(":");
@@ -343,34 +359,48 @@ public class MeetingList extends AppCompatActivity{
             //Toast.makeText(MeetingList.this, String.valueOf(btnMap.get(id)),Toast.LENGTH_SHORT).show();
             roomId = roomMap.get(id);
             checkBtn = meetingMap.get(id);
-            CheckinModel checkin = new CheckinModel();
-            checkin.setMemberEmail(email);
-            checkin.setMeetingId(checkBtn);
-            checkin.setMeetingroomId(roomId);
-            SimpleDateFormat sdf4 = new SimpleDateFormat("HH:mm:ss");
-            if(lcheck.getText().equals("報到")){
-                checkin.setLoginTime(sdf4.format(new java.util.Date()));
-            }else if(lcheck.getText().equals("進場")){
-                checkin.setLogoutTime(sdf4.format(new java.util.Date()));
+            //Toast.makeText(MeetingList.this,String.valueOf(checkBtn),Toast.LENGTH_SHORT).show();
+            for(int i=0;i<meetingId.size();i++){
+                if(meetingId.get(i)==checkBtn){
+                    login_time = logintime.get(i);
+                }
             }
+            if(login_time==null){
+                CheckinModel checkin = new CheckinModel();
+                checkin.setMemberEmail(email);
+                checkin.setMeetingId(checkBtn);
+                checkin.setMeetingroomId(roomId);
+                SimpleDateFormat sdf4 = new SimpleDateFormat("HH:mm:ss");
+                login_time = sdf4.format(new java.util.Date());
+                checkin.setLoginTime(login_time);
+                String ids = String.valueOf(checkBtn);
+                ServiceFactory.getCheckinApi().postCheckin(email,ids,checkin).enqueue(new Callback<CheckinModel>() {
+                    @Override
+                    public void onResponse(Call<CheckinModel> call, Response<CheckinModel> response) {
+                        Intent intent = new Intent();
+                        intent.setClass(MeetingList.this,Meeting.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("meetingId",checkBtn);
+                        bundle.putString("memberEmail",email);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                        //Toast.makeText(MeetingList.this,"success",Toast.LENGTH_SHORT).show();
+                    }
 
-            ServiceFactory.getCheckinApi().postCheckin(checkin).enqueue(new Callback<CheckinModel>() {
-                @Override
-                public void onResponse(Call<CheckinModel> call, Response<CheckinModel> response) {
-                    Intent intent = new Intent();
-                    intent.setClass(MeetingList.this,Meeting.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("meetingId",checkBtn);
-                    bundle.putString("memberEmail",email);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                }
-
-                @Override
-                public void onFailure(Call<CheckinModel> call, Throwable t) {
-
-                }
-            });
+                    @Override
+                    public void onFailure(Call<CheckinModel> call, Throwable t) {
+                        Toast.makeText(MeetingList.this,"fail",Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }else{
+                Intent intent = new Intent();
+                intent.setClass(MeetingList.this,Meeting.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("meetingId",checkBtn);
+                bundle.putString("memberEmail",email);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
 
         }
     };
@@ -384,21 +414,35 @@ public class MeetingList extends AppCompatActivity{
             checkin.setMeetingId(checkBtn);
             checkin.setMeetingroomId(roomId);
             SimpleDateFormat sdf3 = new SimpleDateFormat("HH:mm:ss");
+            for(int i=0;i<meetingId.size();i++){
+                if(meetingId.get(i)==checkBtn){
+                    login_time = logintime.get(i);
+                }
+            }
+            checkin.setLoginTime(login_time);
             checkin.setLogoutTime(sdf3.format(new java.util.Date()));
-            ServiceFactory.getCheckinApi().postCheckin(checkin).enqueue(new Callback<CheckinModel>() {
-                @Override
-                public void onResponse(Call<CheckinModel> call, Response<CheckinModel> response) {
-                    Intent intent = new Intent();
-                    intent.setClass(MeetingList.this,MainActivity.class);
-                    startActivity(intent);
-                    MeetingList.this.finish();
-                }
+            if(checkBtn==-1){
+                Intent intent = new Intent();
+                intent.setClass(MeetingList.this,MainActivity.class);
+                startActivity(intent);
+                MeetingList.this.finish();
+            }else{
+                String id = String.valueOf(checkBtn);
+                ServiceFactory.getCheckinApi().postCheckin(email,id,checkin).enqueue(new Callback<CheckinModel>() {
+                    @Override
+                    public void onResponse(Call<CheckinModel> call, Response<CheckinModel> response) {
+                        Intent intent = new Intent();
+                        intent.setClass(MeetingList.this,MainActivity.class);
+                        startActivity(intent);
+                        MeetingList.this.finish();
+                    }
 
-                @Override
-                public void onFailure(Call<CheckinModel> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<CheckinModel> call, Throwable t) {
 
-                }
-            });
+                    }
+                });
+            }
 
         }
     };
