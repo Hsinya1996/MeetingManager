@@ -10,6 +10,7 @@ public class PositionModel {
     private String current_ssid;
     private String mac_address;
     private int wifi_level;
+    private String wifi_time;
 
     public void setMemberEmail(String member_email){ this.member_email = member_email; }
     public String getMemberEmail(){ return member_email; }
@@ -25,4 +26,7 @@ public class PositionModel {
 
     public void setWifiLevel(int wifi_level){ this.wifi_level = wifi_level; }
     public int getWifiLevel(){ return wifi_level; }
+
+    public void setWifiTime(String wifi_time){ this.wifi_time = wifi_time; }
+    public String getWifiTime(){ return wifi_time; }
 }

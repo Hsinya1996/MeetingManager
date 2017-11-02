@@ -26,11 +26,12 @@
             android:id="@+id/button3"
             android:layout_width="290dp"
             android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/signIn"
+            android:layout_below="@+id/textView3"
+            android:layout_marginTop="34dp"
             android:text="FB登入"
             android:textSize="20sp"
-            android:layout_below="@+id/textView3"
-            android:layout_alignStart="@+id/signIn"
-            android:layout_marginTop="34dp" />
+            android:visibility="invisible" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="260dp"
@@ -91,7 +92,8 @@
             android:layout_marginTop="36dp"
             android:text="------------------------OR------------------------"
             android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:visibility="invisible" />
 
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

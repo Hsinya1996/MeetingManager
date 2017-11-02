@@ -124,7 +124,8 @@ public class MeetingFeedback extends Fragment{
             feedback.setLocationFeedback(location);
             feedback.setItineraryFeedback(itinerary);
             feedback.setSuggestions(suggestion.getText().toString());
-            ServiceFactory.getFeedbackApi().postFeedback(feedback).enqueue(new Callback<FeedbackModel>() {
+            String id = String.valueOf(meetingId);
+            ServiceFactory.getFeedbackApi().postFeedback(email,id,feedback).enqueue(new Callback<FeedbackModel>() {
                 @Override
                 public void onResponse(Call<FeedbackModel> call, Response<FeedbackModel> response) {
                     submit.setText("已填寫");
