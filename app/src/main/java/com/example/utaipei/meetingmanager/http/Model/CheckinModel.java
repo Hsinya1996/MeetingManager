@@ -10,7 +10,8 @@ public class CheckinModel {
     private int meeting_id;
     private String login_time;
     private String logout_time;
-    private int seat_id;
+    private int seat_xid;
+    private int seat_yid;
 
     public void setMemberEmail(String member_email){ this.member_email = member_email; }
     public String getMemberEmail(){ return member_email;}
@@ -27,6 +28,9 @@ public class CheckinModel {
     public void setLogoutTime(String logout_time){ this.logout_time = logout_time; }
     public String getLogoutTime(){ return logout_time;}
 
-    public void setSeatId(int seat_id){ this.seat_id = seat_id; }
-    public int getSeatId(){ return seat_id; }
+    public void setSeatXid(int seat_xid){ this.seat_xid = seat_xid; }
+    public int getSeatXid(){ return seat_xid; }
+
+    public void setSeatYid(int seat_yid){ this.seat_yid = seat_yid; }
+    public int getSeatYid(){ return seat_yid; }
 }
