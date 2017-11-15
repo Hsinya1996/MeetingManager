@@ -334,8 +334,10 @@ public class MeetingList extends AppCompatActivity{
         public void run() {
             wifiReciever = new WifiScanReceiver();
             registerReceiver(wifiReciever, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-            wifiManager.startScan();
-            SystemClock.sleep(800);
+            while(wifiList==null){
+                wifiManager.startScan();
+                SystemClock.sleep(800);
+            }
             Message msg = new Message();
             msg.what = 1;
             mHandler.sendMessage(msg);
