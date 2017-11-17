@@ -10,14 +10,14 @@
         <TextView
             android:id="@+id/show"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="28dp"
+            android:layout_height="25dp"
+            android:layout_marginEnd="15dp"
             android:layout_marginTop="27dp"
-            android:layout_toStartOf="@+id/tv"
-            android:text="你好 XXX"
+            android:text="你好 王小美"
             android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@+id/tv" />
 
         <TextView
             android:id="@+id/tv"
