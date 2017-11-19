@@ -8,6 +8,7 @@ import com.example.utaipei.meetingmanager.http.Api.MeetingroomApi;
 import com.example.utaipei.meetingmanager.http.Api.MemberApi;
 import com.example.utaipei.meetingmanager.http.Api.OrganizerApi;
 import com.example.utaipei.meetingmanager.http.Api.PositionApi;
+import com.example.utaipei.meetingmanager.http.Api.SeatApi;
 import com.example.utaipei.meetingmanager.http.Model.CheckinModel;
 import com.example.utaipei.meetingmanager.http.Model.FeedbackModel;
 
@@ -23,6 +24,7 @@ public class ServiceFactory {
     private static MeetingApi meetingApi;
     private static FeedbackApi feedbackApi;
     private static OrganizerApi organizerApi;
+    private static SeatApi seatApi;
 
     public static MemberApi getMemberApi() {
         if (memberApi == null) {
@@ -71,5 +73,12 @@ public class ServiceFactory {
             organizerApi = ApiClient.getInstance().createService(OrganizerApi.class);
         }
         return organizerApi;
+    }
+
+    public static SeatApi getSeatApi() {
+        if (seatApi == null) {
+            seatApi = ApiClient.getInstance().createService(SeatApi.class);
+        }
+        return seatApi;
     }
 }

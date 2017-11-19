@@ -65,6 +65,9 @@ public class MeetingList extends AppCompatActivity{
     private int btnId;
     private int checkBtn = -1;
     private String login_time = null;
+    private final ArrayList<Integer> XIds = new ArrayList<Integer>();
+    private final ArrayList<Integer> YIds = new ArrayList<Integer>();
+    private int xId,yId;
 
 
     @Override
@@ -141,6 +144,8 @@ public class MeetingList extends AppCompatActivity{
         btnList.clear();
         meetingMap.clear();
         roomMap.clear();
+        XIds.clear();;
+        YIds.clear();
         btnId = 0;
 
         //get time
@@ -176,29 +181,7 @@ public class MeetingList extends AppCompatActivity{
         }
 
 
-        if(checkBtn==-1){
-            getMemberCheckin();
-        }else{
-            CheckinModel checkin = new CheckinModel();
-            checkin.setMemberEmail(email);
-            checkin.setMeetingId(checkBtn);
-            checkin.setMeetingroomId(roomId);
-            checkin.setLoginTime(login_time);
-            checkin.setLogoutTime(time);
-            String id = String.valueOf(checkBtn);
-            ServiceFactory.getCheckinApi().postCheckin(email,id,checkin).enqueue(new Callback<CheckinModel>() {
-                @Override
-                public void onResponse(Call<CheckinModel> call, Response<CheckinModel> response) {
-                    //Toast.makeText(MeetingList.this,"success",Toast.LENGTH_SHORT).show();
-                    getMemberCheckin();
-                }
-
-                @Override
-                public void onFailure(Call<CheckinModel> call, Throwable t) {
-
-                }
-            });
-        }
+        getMemberCheckin();
 
     }
 
@@ -217,12 +200,13 @@ public class MeetingList extends AppCompatActivity{
                             meetingId.add(response.body().get(i).getCheckin().get(m).getMeetingId());
                             roomIds.add(response.body().get(i).getCheckin().get(m).getMeetingroomId());
                             logintime.add(response.body().get(i).getCheckin().get(m).getLoginTime());
+                            XIds.add(response.body().get(i).getCheckin().get(m).getSeatXid());
+                            YIds.add(response.body().get(i).getCheckin().get(m).getSeatYid());
                         }
                     }
                 }
                 //Toast.makeText(MeetingList.this,String.valueOf(roomIds.size()),Toast.LENGTH_SHORT).show();
-                //getMeetingInfo();
-                checkRoomWifi();
+                updateCheckin();
             }
 
             @Override
@@ -230,6 +214,40 @@ public class MeetingList extends AppCompatActivity{
 
             }
         });
+    }
+
+    public void updateCheckin(){
+        if(checkBtn==-1){
+            checkRoomWifi();
+        }else{
+            CheckinModel checkin = new CheckinModel();
+            checkin.setMemberEmail(email);
+            checkin.setMeetingId(checkBtn);
+            checkin.setMeetingroomId(roomId);
+            checkin.setLoginTime(login_time);
+            checkin.setLogoutTime(time);
+            for(int k=0;k<meetingId.size();k++){
+                if(meetingId.get(k)==checkBtn){
+                    xId = XIds.get(k);
+                    yId = YIds.get(k);
+                }
+            }
+            checkin.setSeatXid(xId);
+            checkin.setSeatYid(yId);
+            String id = String.valueOf(checkBtn);
+            ServiceFactory.getCheckinApi().postCheckin(email,id,checkin).enqueue(new Callback<CheckinModel>() {
+                @Override
+                public void onResponse(Call<CheckinModel> call, Response<CheckinModel> response) {
+                    //Toast.makeText(MeetingList.this,"success",Toast.LENGTH_SHORT).show();
+                    checkRoomWifi();
+                }
+
+                @Override
+                public void onFailure(Call<CheckinModel> call, Throwable t) {
+
+                }
+            });
+        }
     }
 
     public void checkRoomWifi(){
