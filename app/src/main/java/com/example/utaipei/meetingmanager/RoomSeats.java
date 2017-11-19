@@ -91,8 +91,10 @@ public class RoomSeats extends AppCompatActivity {
             seatModel.setMacAddress(wifiList.get(i).BSSID);
             String room = roomId.getText().toString();
             String mac = wifiList.get(i).BSSID;
+            String xs = String.valueOf(x);
+            String ys = String.valueOf(y);
 
-            ServiceFactory.getSeatApi().postSeats(room,mac,seatModel).enqueue(new Callback<SeatModel>() {
+            ServiceFactory.getSeatApi().postSeats(room,mac,xs,ys,seatModel).enqueue(new Callback<SeatModel>() {
                 @Override
                 public void onResponse(Call<SeatModel> call, Response<SeatModel> response) {
 

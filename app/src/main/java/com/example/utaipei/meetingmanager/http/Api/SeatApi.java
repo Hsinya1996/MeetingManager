@@ -12,6 +12,6 @@ import retrofit2.http.Path;
  */
 
 public interface SeatApi {
-    @PUT("seatingUpdate/{roomId}/{mac}")
-    Call<SeatModel> postSeats(@Path("roomId") String roomId, @Path("mac") String mac, @Body SeatModel body);
+    @PUT("seatingUpdate/{roomId}/{mac}/{x}/{y}")
+    Call<SeatModel> postSeats(@Path("roomId") String roomId, @Path("mac") String mac, @Path("x") String x, @Path("y") String y, @Body SeatModel body);
 }
