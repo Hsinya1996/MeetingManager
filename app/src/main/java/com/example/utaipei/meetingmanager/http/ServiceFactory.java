@@ -6,6 +6,7 @@ import com.example.utaipei.meetingmanager.http.Api.FeedbackApi;
 import com.example.utaipei.meetingmanager.http.Api.MeetingApi;
 import com.example.utaipei.meetingmanager.http.Api.MeetingroomApi;
 import com.example.utaipei.meetingmanager.http.Api.MemberApi;
+import com.example.utaipei.meetingmanager.http.Api.OrganizerApi;
 import com.example.utaipei.meetingmanager.http.Api.PositionApi;
 import com.example.utaipei.meetingmanager.http.Model.CheckinModel;
 import com.example.utaipei.meetingmanager.http.Model.FeedbackModel;
@@ -21,6 +22,7 @@ public class ServiceFactory {
     private static CheckinApi checkinApi;
     private static MeetingApi meetingApi;
     private static FeedbackApi feedbackApi;
+    private static OrganizerApi organizerApi;
 
     public static MemberApi getMemberApi() {
         if (memberApi == null) {
@@ -62,5 +64,12 @@ public class ServiceFactory {
             feedbackApi = ApiClient.getInstance().createService(FeedbackApi.class);
         }
         return feedbackApi;
+    }
+
+    public static OrganizerApi getOrganizerApi() {
+        if (organizerApi == null) {
+            organizerApi = ApiClient.getInstance().createService(OrganizerApi.class);
+        }
+        return organizerApi;
     }
 }

@@ -20,10 +20,13 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.utaipei.meetingmanager.http.Model.MemberModel;
+import com.example.utaipei.meetingmanager.http.Model.OrganizerModel;
 import com.example.utaipei.meetingmanager.http.ServiceFactory;
 
 import java.util.List;
@@ -40,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
     private TextInputLayout emailInputLayout,pwdInputLayout;
     private EditText email,pwd;
     private int check=0;
+    private RadioGroup userRadioGroup;
+    private RadioButton generaluser,manager;
+    private int user = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +121,11 @@ public class MainActivity extends AppCompatActivity {
         pwdInputLayout = (TextInputLayout)findViewById(R.id.pwdInputLayout);
         pwd = (EditText)findViewById(R.id.pwd);
 
+        userRadioGroup = (RadioGroup)findViewById(R.id.userRadioGroup);
+        generaluser = (RadioButton)findViewById(R.id.user);
+        manager = (RadioButton)findViewById(R.id.manager);
+        userRadioGroup.setOnCheckedChangeListener(userRadioGroupListener);
+
         login = (Button)findViewById(R.id.signIn);
         login.setOnClickListener(loginListener);
     }
@@ -143,6 +154,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //check user or manager
+    private RadioGroup.OnCheckedChangeListener userRadioGroupListener = new RadioGroup.OnCheckedChangeListener(){
+        @Override
+        public void onCheckedChanged(RadioGroup group,int checkedId){
+            if(checkedId==R.id.manager){
+                user = 1;
+            }else if(checkedId==R.id.user){
+                user = 2;
+            }
+        }
+    };
+
     //login action
     private Button.OnClickListener loginListener = new Button.OnClickListener(){
         @Override
@@ -150,17 +173,26 @@ public class MainActivity extends AppCompatActivity {
             emailInputLayout.setError("");
             pwdInputLayout.setError("");
 
-            if(!email.getText().toString().isEmpty()){
-                //使用Retrofit封装的方法
-                request();
+            if(user==0){
+                emailInputLayout.setError("請選擇登入權限");
             }else{
-                emailInputLayout.setError("請輸入帳戶email");
+                if(!email.getText().toString().isEmpty()){
+                    //使用Retrofit封装的方法
+                    if(user==1){
+                        requestOrganizer();
+                    }else if(user==2) {
+                        requestUser();
+                    }
+                }else{
+                    emailInputLayout.setError("請輸入帳戶email");
+                }
             }
+
         }
     };
 
     //get member information from server
-    public void request() {
+    public void requestUser() {
 
         ServiceFactory.getMemberApi().getCall().enqueue(new Callback<List<MemberModel>>(){
             @Override
@@ -198,6 +230,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    //get organizer information from server
+    public void requestOrganizer() {
+        ServiceFactory.getOrganizerApi().getCall().enqueue(new Callback<List<OrganizerModel>>() {
+            @Override
+            public void onResponse(Call<List<OrganizerModel>> call, Response<List<OrganizerModel>> response) {
+                int num = response.body().size();
+                //check email and password correct
+                for(int i=0; i<num; i++){
+                    String mem = response.body().get(i).getOrganizerEmail();
+                    if(email.getText().toString().equals(mem)){
+                        check = 1;
+                        String pw = response.body().get(i).getOrganizerPassword();
+                        if(pwd.getText().toString().equals(pw)){
+                            check = 2;
+                            Intent intent = new Intent();
+                            intent.setClass(MainActivity.this,RoomSeats.class);
+                            startActivity(intent);
+                        }
+                    }
+                }
+                if(check==0){
+                    emailInputLayout.setError("帳戶未註冊");
+                }else if(check==1){
+                    pwdInputLayout.setError("密碼輸入錯誤");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<OrganizerModel>> call, Throwable t) {
+
+            }
+        });
     }
 
 }
