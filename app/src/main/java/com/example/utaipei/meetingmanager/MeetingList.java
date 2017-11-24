@@ -105,7 +105,7 @@ public class MeetingList extends AppCompatActivity{
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if(wifiManager.isWifiEnabled()){
             timer = new Timer();
-            timer.schedule(new scanTask(),0, 30000) ;
+            timer.schedule(new scanTask(),0, 60000) ;
         }
 
 
@@ -261,7 +261,7 @@ public class MeetingList extends AppCompatActivity{
                         if(roomIds.get(i).equals(response.body().get(k).getRoomId())){
                             for(int v=0;v<wifiList.size();v++){
                                 if(wifiList.get(v).SSID.equals(response.body().get(k).getMeetingroomSsid()) && wifiList.get(v).BSSID.equals(response.body().get(k).getMacAddress()) ){
-                                    Toast.makeText(MeetingList.this,response.body().get(k).getRoomId(),Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(MeetingList.this,response.body().get(k).getRoomId(),Toast.LENGTH_SHORT).show();
                                     meetingroom.add(response.body().get(k).getRoomId());
                                 }
                             }
