@@ -166,11 +166,15 @@ public class MeetingList extends AppCompatActivity{
             String wifitime = date+" "+time;
             position.setWifiTime(wifitime);
             String mac = wifiList.get(i).BSSID;
+            final int k = i;
 
             ServiceFactory.getPositionApi().postPositions(email,mac,position).enqueue(new Callback<PositionModel>() {
                 @Override
                 public void onResponse(Call<PositionModel> call, Response<PositionModel> response) {
                     //Toast.makeText(MeetingList.this,"server post",Toast.LENGTH_SHORT).show();
+                    if(k==wifiList.size()-1){
+                        getMemberCheckin();
+                    }
                 }
 
                 @Override
@@ -179,9 +183,6 @@ public class MeetingList extends AppCompatActivity{
                 }
             });
         }
-
-
-        getMemberCheckin();
 
     }
 
