@@ -16,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -118,8 +119,21 @@ public class MainActivity extends AppCompatActivity {
 
         emailInputLayout = (TextInputLayout)findViewById(R.id.emailInputLayout);
         email = (EditText)findViewById(R.id.email);
+        //modify keyboard "Enter" feature
+        email.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                return false;
+            }
+        });
         pwdInputLayout = (TextInputLayout)findViewById(R.id.pwdInputLayout);
         pwd = (EditText)findViewById(R.id.pwd);
+        pwd.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                return false;
+            }
+        });
 
         userRadioGroup = (RadioGroup)findViewById(R.id.userRadioGroup);
         generaluser = (RadioButton)findViewById(R.id.user);

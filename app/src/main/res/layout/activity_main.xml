@@ -47,6 +47,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Email"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
                 android:textSize="20sp" />
         </android.support.design.widget.TextInputLayout>
 
@@ -63,6 +65,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="密碼"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
                 android:textSize="20sp" />
         </android.support.design.widget.TextInputLayout>
 
