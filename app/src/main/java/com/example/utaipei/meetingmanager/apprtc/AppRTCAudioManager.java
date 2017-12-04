@@ -8,7 +8,7 @@
  *  be found in the AUTHORS file in the root of the source tree.
  */
 
-package com.example.utaipei.meetingmanager;
+package com.example.utaipei.meetingmanager.apprtc;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,7 +22,8 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.example.utaipei.meetingmanager.util.AppRTCUtils;
+import com.example.utaipei.meetingmanager.apprtc.util.AppRTCUtils;
+import com.example.utaipei.meetingmanager.R;
 import org.webrtc.ThreadUtils;
 
 import java.util.Collections;

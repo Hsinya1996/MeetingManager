@@ -8,14 +8,14 @@
  *  be found in the AUTHORS file in the root of the source tree.
  */
 
-package com.example.utaipei.meetingmanager;
+package com.example.utaipei.meetingmanager.apprtc;
 
 import android.content.Context;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
-import com.example.utaipei.meetingmanager.AppRTCClient.SignalingParameters;
+import com.example.utaipei.meetingmanager.apprtc.AppRTCClient.SignalingParameters;
 import org.webrtc.AudioSource;
 import org.webrtc.AudioTrack;
 import org.webrtc.CameraVideoCapturer;

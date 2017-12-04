@@ -8,7 +8,7 @@
  *  be found in the AUTHORS file in the root of the source tree.
  */
 
-package com.example.utaipei.meetingmanager;
+package com.example.utaipei.meetingmanager.apprtc;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -32,12 +33,13 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Toast;
 
-import com.example.utaipei.meetingmanager.AppRTCAudioManager.AudioDevice;
-import com.example.utaipei.meetingmanager.AppRTCAudioManager.AudioManagerEvents;
-import com.example.utaipei.meetingmanager.AppRTCClient.RoomConnectionParameters;
-import com.example.utaipei.meetingmanager.AppRTCClient.SignalingParameters;
-import com.example.utaipei.meetingmanager.PeerConnectionClient.DataChannelParameters;
-import com.example.utaipei.meetingmanager.PeerConnectionClient.PeerConnectionParameters;
+import com.example.utaipei.meetingmanager.apprtc.AppRTCAudioManager.AudioDevice;
+import com.example.utaipei.meetingmanager.apprtc.AppRTCAudioManager.AudioManagerEvents;
+import com.example.utaipei.meetingmanager.apprtc.AppRTCClient.RoomConnectionParameters;
+import com.example.utaipei.meetingmanager.apprtc.AppRTCClient.SignalingParameters;
+import com.example.utaipei.meetingmanager.apprtc.PeerConnectionClient.DataChannelParameters;
+import com.example.utaipei.meetingmanager.apprtc.PeerConnectionClient.PeerConnectionParameters;
+import com.example.utaipei.meetingmanager.R;
 import org.webrtc.Camera1Enumerator;
 import org.webrtc.Camera2Enumerator;
 import org.webrtc.CameraEnumerator;

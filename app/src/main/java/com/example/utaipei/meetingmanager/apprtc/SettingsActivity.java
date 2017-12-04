@@ -8,7 +8,7 @@
  *  be found in the AUTHORS file in the root of the source tree.
  */
 
-package com.example.utaipei.meetingmanager;
+package com.example.utaipei.meetingmanager.apprtc;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -16,6 +16,9 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.support.v7.app.AppCompatActivity;
+
+import com.example.utaipei.meetingmanager.R;
 
 import org.webrtc.Camera2Enumerator;
 import org.webrtc.voiceengine.WebRtcAudioUtils;
@@ -23,7 +26,7 @@ import org.webrtc.voiceengine.WebRtcAudioUtils;
 /**
  * Settings activity for AppRTC.
  */
-public class SettingsActivity extends Activity implements OnSharedPreferenceChangeListener {
+public class SettingsActivity extends AppCompatActivity implements OnSharedPreferenceChangeListener {
   private SettingsFragment settingsFragment;
   private String keyprefVideoCall;
   private String keyprefScreencapture;

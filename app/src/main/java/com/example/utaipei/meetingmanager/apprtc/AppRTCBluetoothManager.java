@@ -8,7 +8,7 @@
  *  be found in the AUTHORS file in the root of the source tree.
  */
 
-package com.example.utaipei.meetingmanager;
+package com.example.utaipei.meetingmanager.apprtc;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
@@ -26,7 +26,7 @@ import android.os.Looper;
 import android.os.Process;
 import android.util.Log;
 
-import com.example.utaipei.meetingmanager.util.AppRTCUtils;
+import com.example.utaipei.meetingmanager.apprtc.util.AppRTCUtils;
 import org.webrtc.ThreadUtils;
 
 import java.util.List;

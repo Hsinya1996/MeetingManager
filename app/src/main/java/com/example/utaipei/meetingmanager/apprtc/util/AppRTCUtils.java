@@ -8,7 +8,7 @@
  *  be found in the AUTHORS file in the root of the source tree.
  */
 
-package com.example.utaipei.meetingmanager.util;
+package com.example.utaipei.meetingmanager.apprtc.util;
 
 import android.os.Build;
 import android.util.Log;

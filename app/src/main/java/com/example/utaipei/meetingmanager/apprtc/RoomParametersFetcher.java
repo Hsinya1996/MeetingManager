@@ -8,13 +8,13 @@
  *  be found in the AUTHORS file in the root of the source tree.
  */
 
-package com.example.utaipei.meetingmanager;
+package com.example.utaipei.meetingmanager.apprtc;
 
 import android.util.Log;
 
-import com.example.utaipei.meetingmanager.AppRTCClient.SignalingParameters;
-import com.example.utaipei.meetingmanager.util.AsyncHttpURLConnection;
-import com.example.utaipei.meetingmanager.util.AsyncHttpURLConnection.AsyncHttpEvents;
+import com.example.utaipei.meetingmanager.apprtc.AppRTCClient.SignalingParameters;
+import com.example.utaipei.meetingmanager.apprtc.util.AsyncHttpURLConnection;
+import com.example.utaipei.meetingmanager.apprtc.util.AsyncHttpURLConnection.AsyncHttpEvents;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -164,7 +164,7 @@ public class RoomParametersFetcher {
     LinkedList<PeerConnection.IceServer> turnServers = new LinkedList<PeerConnection.IceServer>();
     Log.d(TAG, "Request TURN from: " + url);
     HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-    connection.setDoOutput(true);
+    //connection.setDoOutput(true);
     connection.setRequestProperty("REFERER", "https://appr.tc");
     connection.setConnectTimeout(TURN_HTTP_TIMEOUT_MS);
     connection.setReadTimeout(TURN_HTTP_TIMEOUT_MS);

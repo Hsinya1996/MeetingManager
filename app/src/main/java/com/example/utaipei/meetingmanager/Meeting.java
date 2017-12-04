@@ -1,12 +1,16 @@
 package com.example.utaipei.meetingmanager;
 
+//import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+
 import android.support.v4.app.Fragment;
+//import android.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,16 +19,21 @@ import java.util.List;
  * Created by cindy on 2017/7/15.
  */
 
-public class Meeting extends AppCompatActivity {
+public class Meeting extends AppCompatActivity{
 
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     public static int lastPosition = 0;
 
+    //private static final String TAG = "Meeting";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.meeting);
+
+
 
         mViewPager = (ViewPager)findViewById(R.id.container);
 
@@ -45,6 +54,13 @@ public class Meeting extends AppCompatActivity {
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.connect_menu, menu);
+        return true;
+    }
+
+
+
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new MeetingIntro(), "會議簡介");
@@ -53,6 +69,7 @@ public class Meeting extends AppCompatActivity {
 
         viewPager.setAdapter(adapter);
     }
+
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
@@ -82,5 +99,7 @@ public class Meeting extends AppCompatActivity {
             return mFragmentTitleList.get(position);
         }
     }
+
+
 
 }

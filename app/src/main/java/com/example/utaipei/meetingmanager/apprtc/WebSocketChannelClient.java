@@ -8,13 +8,13 @@
  *  be found in the AUTHORS file in the root of the source tree.
  */
 
-package com.example.utaipei.meetingmanager;
+package com.example.utaipei.meetingmanager.apprtc;
 
 import android.os.Handler;
 import android.util.Log;
 
-import com.example.utaipei.meetingmanager.util.AsyncHttpURLConnection;
-import com.example.utaipei.meetingmanager.util.AsyncHttpURLConnection.AsyncHttpEvents;
+import com.example.utaipei.meetingmanager.apprtc.util.AsyncHttpURLConnection;
+import com.example.utaipei.meetingmanager.apprtc.util.AsyncHttpURLConnection.AsyncHttpEvents;
 import org.json.JSONException;
 import org.json.JSONObject;
 
