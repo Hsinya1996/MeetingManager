@@ -37,6 +37,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int REQUEST_CAMERA = 100;
+    private static final int REQUEST_RECORD_AUDIO = 101;
+    private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 103;
     private Button login;
     private WifiManager wifiManager;
     private static final int REQUEST_FINE_LOCATION_PERMISSION = 102 ;
@@ -65,6 +68,48 @@ public class MainActivity extends AppCompatActivity {
             // for ActivityCompat#requestPermissions for more details.
 
             requestLocationPermission(); // 詢問使用者開啟權限
+        }
+
+        //Camera permission
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            //如果沒有授權使用相機就會跳出來這個
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+
+            requestCameraPermission(); // 詢問使用者開啟權限
+        }
+
+        //Microphone permission
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            //如果沒有授權使用麥克風就會跳出來這個
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+
+            requestMicrophonePermission(); // 詢問使用者開啟權限
+        }
+
+        //WRITE_EXTERNAL_STORAGE permission
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            //如果沒有授權使用儲存空間就會跳出來這個
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+
+            requestWritePermission(); // 詢問使用者開啟權限
         }
 
         //開啟wifi
@@ -163,6 +208,78 @@ public class MainActivity extends AppCompatActivity {
             }
             else {
                 // 啟動地圖與定位元件
+
+            }
+        }
+    }
+
+    //request camera permission
+    private void requestCameraPermission() {
+        // 如果裝置版本是6.0（包含）以上
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // 取得授權狀態，參數是請求授權的名稱
+            int hasPermission = checkSelfPermission(
+                    Manifest.permission.CAMERA);
+
+            // 如果未授權
+            if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+                // 請求授權
+                //     第一個參數是請求授權的名稱
+                //     第二個參數是請求代碼
+                requestPermissions(
+                        new String[]{Manifest.permission.CAMERA},
+                        REQUEST_CAMERA);
+            }
+            else {
+                // 啟動相機
+
+            }
+        }
+    }
+
+    //request Microphone permission
+    private void requestMicrophonePermission() {
+        // 如果裝置版本是6.0（包含）以上
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // 取得授權狀態，參數是請求授權的名稱
+            int hasPermission = checkSelfPermission(
+                    Manifest.permission.RECORD_AUDIO);
+
+            // 如果未授權
+            if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+                // 請求授權
+                //     第一個參數是請求授權的名稱
+                //     第二個參數是請求代碼
+                requestPermissions(
+                        new String[]{Manifest.permission.RECORD_AUDIO},
+                        REQUEST_RECORD_AUDIO);
+            }
+            else {
+                // 啟動麥克風
+
+            }
+        }
+    }
+
+    //request WRITE_EXTERNAL_STORAGE permission
+    private void requestWritePermission() {
+        // 如果裝置版本是6.0（包含）以上
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // 取得授權狀態，參數是請求授權的名稱
+            int hasPermission = checkSelfPermission(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+            // 如果未授權
+            if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+                // 請求授權
+                //     第一個參數是請求授權的名稱
+                //     第二個參數是請求代碼
+                requestPermissions(
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_WRITE_EXTERNAL_STORAGE);
+            }
+            else {
+                // 允許使用儲存空間
 
             }
         }
