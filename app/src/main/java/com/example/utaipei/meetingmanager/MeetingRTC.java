@@ -1,42 +1,24 @@
 package com.example.utaipei.meetingmanager;
 
 
-import android.app.Activity;
-import android.hardware.Camera;
+
 import android.os.Bundle;
-
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
-import android.app.Dialog;
-
 import android.util.Log;
-import android.util.Size;
 import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.content.Intent;
 import android.view.View.OnClickListener;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.URLUtil;
 import android.widget.AdapterView;
@@ -49,17 +31,12 @@ import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-
 import java.util.ArrayList;
 import java.util.Random;
-
-
 
 import com.example.utaipei.meetingmanager.apprtc.CallActivity;
 import com.example.utaipei.meetingmanager.apprtc.SettingsActivity;
 
-import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by cindy on 2017/7/16.
