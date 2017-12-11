@@ -4,10 +4,11 @@
     <string name="settings_name" translatable="false">AppRTC Settings</string>
     <string name="disconnect_call">Disconnect Call</string>
     <string name="room_description">
-        請輸入一串6-8位數字，注意：與欲通話者兩者號碼須相同
+        請輸入一串6-8位數字
     </string>
-    <string name="favorites">Favorites</string>
-    <string name="no_favorites">No favorites</string>
+    <string name="room_description2">(注意：與欲通話者兩者號碼須相同)</string>
+    <string name="favorites">我的最愛</string>
+    <string name="no_favorites">無</string>
     <string name="invalid_url_title">Invalid URL</string>
     <string name="invalid_url_text">The URL or room name you entered resulted in an invalid URL: %1$s
     </string>
