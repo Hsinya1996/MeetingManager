@@ -396,6 +396,7 @@ public class MeetingList extends AppCompatActivity{
                 SimpleDateFormat sdf4 = new SimpleDateFormat("HH:mm:ss");
                 login_time = sdf4.format(new java.util.Date());
                 checkin.setLoginTime(login_time);
+                checkin.setLogoutTime(login_time);
                 String ids = String.valueOf(checkBtn);
                 ServiceFactory.getCheckinApi().postCheckin(email,ids,checkin).enqueue(new Callback<CheckinModel>() {
                     @Override
