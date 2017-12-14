@@ -12,14 +12,19 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.utaipei.meetingmanager.http.Model.MeetingroomModel;
 import com.example.utaipei.meetingmanager.http.Model.SeatModel;
 import com.example.utaipei.meetingmanager.http.ServiceFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -31,27 +36,70 @@ import retrofit2.Response;
  */
 
 public class RoomSeats extends AppCompatActivity {
-    private EditText roomId,idX,idY;
+    private EditText idX,idY;
     private Button setUp;
     private WifiManager wifiManager;
     private List<ScanResult> wifiList;
     private WifiScanReceiver wifiReciever;
+    private ArrayList<String> roomIds = new ArrayList<String>();
+    private Spinner spinner;
+    private String room;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.room_seats);
 
-        roomId = (EditText)findViewById(R.id.roomId);
+        // 初始化控件
+        spinner = (Spinner) findViewById(R.id.spinner);
+        roomIds.add("");
+        // 建立数据源
+        ServiceFactory.getMeetingroomApi().getCall().enqueue(new Callback<List<MeetingroomModel>>() {
+            @Override
+            public void onResponse(Call<List<MeetingroomModel>> call, Response<List<MeetingroomModel>> response) {
+                int n = response.body().size();
+                for(int i=0;i<n;i++){
+                    roomIds.add(response.body().get(i).getRoomId());
+                }
+                createSpinner();
+            }
+
+            @Override
+            public void onFailure(Call<List<MeetingroomModel>> call, Throwable t) {
+
+            }
+        });
+
         idX = (EditText)findViewById(R.id.x);
         idY = (EditText)findViewById(R.id.y);
 
         setUp = (Button)findViewById(R.id.setUp);
+
         //開啟wifi
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if(wifiManager.isWifiEnabled()){
             setUp.setOnClickListener(setUpListener);
         }
+    }
+
+    //add data of roomIds to spinner item
+    public void createSpinner(){
+        // 建立Adapter并且绑定数据源
+        ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, roomIds);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //绑定 Adapter到控件
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                room = roomIds.get(pos);
+                //Toast.makeText(RoomSeats.this, room, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Another interface callback
+            }
+        });
     }
 
     //scan wifi lists
@@ -81,7 +129,7 @@ public class RoomSeats extends AppCompatActivity {
 
         for(int i=0;i<wifiList.size();i++){
             SeatModel seatModel = new SeatModel();
-            seatModel.setRoomId(roomId.getText().toString());
+            seatModel.setRoomId(room);
             int x = Integer.valueOf(idX.getText().toString());
             int y = Integer.valueOf(idY.getText().toString());
             seatModel.setSeatXid(x);
@@ -89,7 +137,6 @@ public class RoomSeats extends AppCompatActivity {
             seatModel.setSeatSsid(wifiList.get(i).SSID);
             seatModel.setWifiLevel(wifiList.get(i).level);
             seatModel.setMacAddress(wifiList.get(i).BSSID);
-            String room = roomId.getText().toString();
             String mac = wifiList.get(i).BSSID;
             String xs = String.valueOf(x);
             String ys = String.valueOf(y);
@@ -114,7 +161,7 @@ public class RoomSeats extends AppCompatActivity {
     private Button.OnClickListener setUpListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(roomId.getText().toString().isEmpty()){
+            if(room.equals("")){
                 Toast.makeText(RoomSeats.this,"請輸入會議室名稱",Toast.LENGTH_SHORT).show();
             }else if(idX.getText().toString().isEmpty()){
                 Toast.makeText(RoomSeats.this,"請輸入X座標",Toast.LENGTH_SHORT).show();

@@ -19,68 +19,64 @@
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
-        <EditText
-            android:id="@+id/roomId"
-            android:layout_width="300dp"
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text=""
-            android:textSize="20sp"
-            android:layout_marginTop="13dp"
+            android:layout_alignStart="@+id/textView"
             android:layout_below="@+id/textView"
-            android:layout_alignStart="@+id/textView" />
+            android:layout_marginTop="14dp" />
 
         <TextView
             android:id="@+id/textView9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="31dp"
             android:text="X座標:"
             android:textColor="@android:color/black"
             android:textSize="20sp"
-            android:layout_below="@+id/roomId"
-            android:layout_alignStart="@+id/roomId" />
+            android:layout_below="@+id/spinner"
+            android:layout_alignStart="@+id/spinner" />
 
         <EditText
             android:id="@+id/x"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="number"
             android:layout_alignBaseline="@+id/textView9"
             android:layout_alignBottom="@+id/textView9"
-            android:layout_toEndOf="@+id/textView9" />
+            android:layout_toEndOf="@+id/textView9"
+            android:ems="10"
+            android:inputType="number" />
 
         <TextView
             android:id="@+id/textView11"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/textView9"
-            android:layout_below="@+id/x"
-            android:layout_marginTop="13dp"
+            android:layout_marginTop="18dp"
             android:text="Y座標:"
             android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:layout_below="@+id/x"
+            android:layout_toStartOf="@+id/y" />
 
         <EditText
             android:id="@+id/y"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="number"
             android:layout_alignBaseline="@+id/textView11"
             android:layout_alignBottom="@+id/textView11"
-            android:layout_alignStart="@+id/x" />
+            android:layout_alignStart="@+id/x"
+            android:ems="10"
+            android:inputType="number" />
 
         <Button
             android:id="@+id/setUp"
             android:layout_width="290dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/y"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="26dp"
             android:text="建立指紋庫"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
     </RelativeLayout>
 </LinearLayout>
