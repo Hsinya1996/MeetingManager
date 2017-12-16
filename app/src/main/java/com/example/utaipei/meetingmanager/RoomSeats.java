@@ -26,6 +26,8 @@ import com.example.utaipei.meetingmanager.http.ServiceFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,6 +46,9 @@ public class RoomSeats extends AppCompatActivity {
     private ArrayList<String> roomIds = new ArrayList<String>();
     private Spinner spinner;
     private String room;
+    private ArrayList<WifiAverageLevel> wifis = new ArrayList<WifiAverageLevel>();
+    private int check;
+    private Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,34 +132,44 @@ public class RoomSeats extends AppCompatActivity {
         String text = String.valueOf(wifiList.size());
         //Toast.makeText(RoomSeats.this,text,Toast.LENGTH_SHORT).show();
 
-        for(int i=0;i<wifiList.size();i++){
-            SeatModel seatModel = new SeatModel();
-            seatModel.setRoomId(room);
-            int x = Integer.valueOf(idX.getText().toString());
-            int y = Integer.valueOf(idY.getText().toString());
-            seatModel.setSeatXid(x);
-            seatModel.setSeatYid(y);
-            seatModel.setSeatSsid(wifiList.get(i).SSID);
-            seatModel.setWifiLevel(wifiList.get(i).level);
-            seatModel.setMacAddress(wifiList.get(i).BSSID);
-            String mac = wifiList.get(i).BSSID;
-            String xs = String.valueOf(x);
-            String ys = String.valueOf(y);
-
-            ServiceFactory.getSeatApi().postSeats(room,mac,xs,ys,seatModel).enqueue(new Callback<SeatModel>() {
-                @Override
-                public void onResponse(Call<SeatModel> call, Response<SeatModel> response) {
-
+        if(check==0){
+            for(int i=0;i<wifiList.size();i++){
+                WifiAverageLevel wifiAverageLevel = new WifiAverageLevel();
+                wifiAverageLevel.setSsid(wifiList.get(i).SSID);
+                wifiAverageLevel.setMacAddress(wifiList.get(i).BSSID);
+                wifiAverageLevel.setLevel(wifiList.get(i).level);
+                wifiAverageLevel.addCount();
+                wifiAverageLevel.judgeLevel(wifiList.get(i).level);
+                wifis.add(wifiAverageLevel);
+            }
+        }else{
+            for(int i=0;i<wifiList.size();i++){
+                int t=0;
+                for(int k=0;k<wifis.size();k++){
+                    if(wifis.get(k).getMacAddress().equals(wifiList.get(i).BSSID)){
+                        wifis.get(k).addLevel(wifiList.get(i).level);
+                        wifis.get(k).addCount();
+                        wifis.get(k).judgeLevel(wifiList.get(i).level);
+                        t=1;
+                    }
                 }
-
-                @Override
-                public void onFailure(Call<SeatModel> call, Throwable t) {
-
+                if(t==0){
+                    WifiAverageLevel wifiAverageLevel = new WifiAverageLevel();
+                    wifiAverageLevel.setSsid(wifiList.get(i).SSID);
+                    wifiAverageLevel.setMacAddress(wifiList.get(i).BSSID);
+                    wifiAverageLevel.setLevel(wifiList.get(i).level);
+                    wifiAverageLevel.addCount();
+                    wifiAverageLevel.judgeLevel(wifiList.get(i).level);
+                    wifis.add(wifiAverageLevel);
                 }
-            });
-
+            }
         }
-        Toast.makeText(RoomSeats.this,"建立成功!",Toast.LENGTH_SHORT).show();
+        Toast.makeText(RoomSeats.this,"掃描中",Toast.LENGTH_SHORT).show();
+        check++;
+        unregisterReceiver(wifiReciever);
+        if(check==10){
+            postWifi();
+        }
     }
 
     //setUp action
@@ -168,28 +183,75 @@ public class RoomSeats extends AppCompatActivity {
             }else if(idY.getText().toString().isEmpty()){
                 Toast.makeText(RoomSeats.this,"請輸入Y座標",Toast.LENGTH_SHORT).show();
             }else{
-                wifiReciever = new WifiScanReceiver();
-                registerReceiver(wifiReciever, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-                //while(wifiList==null){
-                    wifiManager.startScan();
-                    SystemClock.sleep(800);
-                //}
-                if(wifiList!=null){
-                    Message msg = new Message();
-                    msg.what = 1;
-                    mHandler.sendMessage(msg);
-                }else{
-                    Toast.makeText(RoomSeats.this,"掃描中,請再按一次按鈕",Toast.LENGTH_SHORT).show();
-                }
+                wifis.clear();
+                check=0;
+                timer = new Timer();
+                timer.schedule(new scanTask(),0, 2500) ;
             }
         }
     };
+
+    //time tack of  2.5s
+    private class scanTask extends TimerTask {
+        @Override
+        public void run() {
+            wifiList=null;
+            wifiReciever = new WifiScanReceiver();
+            registerReceiver(wifiReciever, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+            while(wifiList==null){
+                wifiManager.startScan();
+                SystemClock.sleep(800);
+            }
+            Message msg = new Message();
+            msg.what = 1;
+            mHandler.sendMessage(msg);
+        }
+    }
 
     // wifi receiver
     private final class WifiScanReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context c, Intent intent) {
             wifiList = wifiManager.getScanResults();
+        }
+    }
+
+    //post wifi info to server
+    public void postWifi(){
+        timer.cancel();
+        for(int c=0;c<wifis.size();c++){
+            if(wifis.get(c).getCount()>=7){
+                SeatModel seatModel = new SeatModel();
+                seatModel.setRoomId(room);
+                int x = Integer.valueOf(idX.getText().toString());
+                int y = Integer.valueOf(idY.getText().toString());
+                seatModel.setSeatXid(x);
+                seatModel.setSeatYid(y);
+                seatModel.setSeatSsid(wifis.get(c).getSsid());
+                seatModel.setWifiLevel(wifis.get(c).meanLevel());
+                seatModel.setMacAddress(wifis.get(c).getMacAddress());
+                String mac = wifis.get(c).getMacAddress();
+                String xs = String.valueOf(x);
+                String ys = String.valueOf(y);
+
+                ServiceFactory.getSeatApi().postSeats(room,mac,xs,ys,seatModel).enqueue(new Callback<SeatModel>() {
+                    @Override
+                    public void onResponse(Call<SeatModel> call, Response<SeatModel> response) {
+                        //Toast.makeText(RoomSeats.this,"成功上傳!",Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<SeatModel> call, Throwable t) {
+
+                    }
+                });
+            }
+        }
+        //Toast.makeText(RoomSeats.this,String.valueOf(wifis.size()),Toast.LENGTH_SHORT).show();
+        if(wifis.size()==0){
+            Toast.makeText(RoomSeats.this,"掃描中,請再按一次按鈕",Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(RoomSeats.this,"建立成功!!",Toast.LENGTH_SHORT).show();
         }
     }
 

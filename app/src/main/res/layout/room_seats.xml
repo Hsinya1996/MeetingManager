@@ -75,7 +75,8 @@
             android:layout_height="wrap_content"
             android:text="建立指紋庫"
             android:textSize="20sp"
-            android:layout_centerVertical="true"
+            android:layout_marginTop="42dp"
+            android:layout_below="@+id/y"
             android:layout_centerHorizontal="true" />
 
     </RelativeLayout>

@@ -351,6 +351,7 @@ public class MeetingList extends AppCompatActivity{
     private class scanTask extends TimerTask {
         @Override
         public void run() {
+            wifiList=null;
             wifiReciever = new WifiScanReceiver();
             registerReceiver(wifiReciever, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
             while(wifiList==null){
