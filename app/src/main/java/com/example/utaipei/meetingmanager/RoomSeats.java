@@ -57,7 +57,7 @@ public class RoomSeats extends AppCompatActivity {
 
         // 初始化控件
         spinner = (Spinner) findViewById(R.id.spinner);
-        roomIds.add("");
+        roomIds.add("請選擇");
         // 建立数据源
         ServiceFactory.getMeetingroomApi().getCall().enqueue(new Callback<List<MeetingroomModel>>() {
             @Override
@@ -176,8 +176,8 @@ public class RoomSeats extends AppCompatActivity {
     private Button.OnClickListener setUpListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(room.equals("")){
-                Toast.makeText(RoomSeats.this,"請輸入會議室名稱",Toast.LENGTH_SHORT).show();
+            if(room.equals("請選擇")){
+                Toast.makeText(RoomSeats.this,"請選擇會議室名稱",Toast.LENGTH_SHORT).show();
             }else if(idX.getText().toString().isEmpty()){
                 Toast.makeText(RoomSeats.this,"請輸入X座標",Toast.LENGTH_SHORT).show();
             }else if(idY.getText().toString().isEmpty()){
