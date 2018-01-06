@@ -347,7 +347,7 @@ public class MeetingList extends AppCompatActivity{
     }
 
 
-    //time tack of 10's
+    //time tack of 60's
     private class scanTask extends TimerTask {
         @Override
         public void run() {
